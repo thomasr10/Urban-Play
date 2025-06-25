@@ -159,6 +159,10 @@ input {
     --montserrat-semiBold: 'Montserrat-SemiBold';
 }
 
+body {
+    background-color: var(--grey-white);
+}
+
 .raw-limit-size {
     width: 100%;
     max-width: 360px;
@@ -190,7 +194,7 @@ input {
     .links {
         display: flex;
         justify-content: space-between;
-        
+
         span {
             margin-top: 24px;
         }
@@ -223,6 +227,67 @@ input {
     font-family: var(--urban-bold);
     font-size: 3rem;
     color: var(--blue-main);
+    text-align: center;
+    margin-top: 32px;
+}
+
+.page-section {
+    margin-bottom: 32px;
+}
+
+.form {
+    margin-top: 16px;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        margin-top: 16px;
+
+        label {
+            font-size: 1rem;
+            color: var(--blue-main);
+            font-family: var(--urban-medium);
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 40px;
+            border-radius: 12px;
+            border: solid 2px var(--blue-main);
+            padding: 0 0.5rem;
+            color: var(--blue-main);
+            font-size: 1rem;
+            font-family: var(--urban-regular);
+            margin-top: 8px;
+            background-color: var(--grey-white);
+        }
+
+    }
+
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .btn {
+            margin-top: 24px;
+        }
+    }
+}
+
+.account-link {
+    color: var(--blue-main);
+    font-size: 0.9rem;
+    font-family: var(--urban-light);
+    display: block;
+    margin-top: 8px;
 }
 
 .header-connected {
@@ -325,6 +390,40 @@ input {
 
         #map {
             margin-top: 16px;
+        }
+    }
+}
+
+.home-connected {
+
+    .search-activities {
+        margin-top: 32px;
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+
+            input {
+                width: 100%;
+                max-width: 300px;
+                border-radius: 30px;
+                border: solid 2px var(--blue-main);
+                height: 36px;
+                color: var(--blue-main);
+                font-size: 1rem;
+                font-family: var(--urban-medium);
+                padding: 0 0.8rem;
+            }
+
+            .search-input {
+                color: var(--blue-main);
+                height: 36px;
+            }
+        }
+
+        #map {
+            margin-top: 24px;
         }
     }
 }

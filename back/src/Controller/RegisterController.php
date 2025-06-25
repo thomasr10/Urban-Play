@@ -43,6 +43,7 @@ final class RegisterController extends AbstractController
         $user->setLastName($userData['lastName']);
         $user->setEmail($userData['email']);
         $user->setBirthDate(\DateTime::createFromImmutable($birthDate));
+        $user->setGender($userData['gender']);
             
         $hashedPassword = $passwordHasher->hashPassword($user, $userData['password']);
         $user->setPassword($hashedPassword); 
