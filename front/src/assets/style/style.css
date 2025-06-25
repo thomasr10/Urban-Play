@@ -147,10 +147,51 @@ input {
   --urban-light: "Urbanist-Light";
   --urban-regular: "Urbanist-Regular";
   --urban-semiBold: "Urbanist-SemiBold";
-  --urban-medium: "Urbanis-Medium";
+  --urban-medium: "Urbanist-Medium";
   --urban-bold: "Urbanist-Bold";
   --montserrat-regular: "Montserrat-Regular";
   --montserrat-semiBold: "Montserrat-SemiBold";
+}
+
+.raw-limit-size {
+  width: 100%;
+  max-width: 360px;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+#map {
+  width: 100%;
+  height: 280px;
+}
+
+.footer {
+  width: 100%;
+  height: 100px;
+  background-color: var(--orange-main);
+  position: relative;
+  padding: 0 1rem;
+  margin-top: 24px;
+}
+.footer span {
+  color: var(--blue-main);
+  font-size: 0.9rem;
+  font-family: var(--urban-medium);
+}
+.footer .links {
+  display: flex;
+  justify-content: space-between;
+}
+.footer .links span {
+  margin-top: 24px;
+}
+.footer .credit span {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .btn {
@@ -172,4 +213,93 @@ input {
   font-family: var(--urban-bold);
   font-size: 3rem;
   color: var(--blue-main);
+}
+
+.header-connected {
+  width: 100%;
+  height: 80px;
+  text-align: center;
+  background-color: var(--orange-main);
+  line-height: 80px;
+}
+.header-connected .title-header {
+  color: var(--blue-main);
+  font-size: 1.5rem;
+  font-family: var(--urban-bold);
+}
+
+.header-unconnected {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--orange-main);
+  line-height: 80px;
+  padding: 0 1.2rem;
+}
+.header-unconnected .title-header {
+  color: var(--blue-main);
+  font-size: 1.5rem;
+  font-family: var(--urban-bold);
+}
+.header-unconnected a {
+  font-family: var(--urban-medium);
+  color: var(--blue-main);
+  font-size: 1rem;
+}
+
+.home-unco {
+  width: 100%;
+}
+.home-unco .hero figure {
+  width: 100%;
+  position: relative;
+}
+.home-unco .hero figure img {
+  width: 100%;
+  display: block;
+}
+.home-unco .hero figure::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5058823529);
+  top: 0;
+  left: 0;
+}
+.home-unco .hero figure p {
+  position: absolute;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  font-size: 32px;
+  font-family: var(--urban-bold);
+  text-align: center;
+  width: 70%;
+}
+.home-unco .home-unco-content h1 {
+  font-size: 1.5rem;
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+  text-align: center;
+  margin-top: 24px;
+}
+.home-unco .home-unco-content h2 {
+  font-size: 1.3rem;
+  color: var(--blue-main);
+  font-family: var(--urban-semiBold);
+  text-align: center;
+  margin-top: 16px;
+}
+.home-unco .home-unco-content p {
+  margin-top: 24px;
+  color: var(--blue-main);
+  font-size: 1rem;
+  font-family: var(--montserrat-regular);
+}
+.home-unco .home-unco-content #map {
+  margin-top: 16px;
 }/*# sourceMappingURL=style.css.map */

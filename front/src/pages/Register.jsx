@@ -1,6 +1,7 @@
 import Button from "../components/Button";
-import {useState} from "react";
-
+import {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Register() {
 
@@ -9,6 +10,14 @@ function Register() {
     const [birthDate, setBirthDate] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const { login, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
 
     async function sendUserData(e) {
         e.preventDefault();

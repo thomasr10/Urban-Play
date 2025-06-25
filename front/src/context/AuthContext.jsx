@@ -8,7 +8,27 @@ function AuthProvider({children}) {
     useEffect(() => {
         const token = localStorage.getItem('token');
         (token !== null) ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    })
+    }, []);
+
+    const login = (token) => {
+        localStorage.setItem('token', token);
+        setIsAuthenticated(true);
+    }
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+    }
+
+    return (
+        <AuthContext.Provider value={{ isAuthenticated, login, logout}}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
-export default AuthProvider;
+export function useAuth() {
+    return useContext(AuthContext);
+}
+
+export { AuthProvider };
