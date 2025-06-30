@@ -8,6 +8,7 @@ import Menu from './components/Menu';
 import Profil from './pages/Profil';
 import ModifyProfil from './pages/ModifyProfil';
 import NewUser from './pages/NewUser';
+import VerifiyToken from './pages/VerifiyToken';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register/>} />
         <Route path="/new-user/:id" element={<NewUser/>} />
+        <Route path="/verify-token" element={<VerifiyToken/>} />
         <Route path="/login" element={<Login/>} />
         <Route path='/' element={<Home />} />
         <Route path='/profil' element={<Profil />} />

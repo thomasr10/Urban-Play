@@ -8,7 +8,7 @@ function NewUser () {
     async function sendMail () {
         
         try {
-            const response = await fetch('/mail/new-user', {
+            const response = await fetch('http://localhost:8000/mail/new-user', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ id })
@@ -20,13 +20,17 @@ function NewUser () {
                 throw new Error(`Erreur http : ${response.status}, ${data.message}`);
             }
 
+            return data;
+
         } catch (err) {
             console.error(err);
         }
     }
 
     useEffect(() => {
-        sendMail();
+        sendMail().then((data) => {
+            console.log(data);
+        }).then((err) => {console.error(err)});
     }, [])
 
     return (

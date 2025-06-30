@@ -13,6 +13,7 @@ use App\Service\AgeVerification;
 use App\Service\TokenGenerator;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use App\Repository\UserRepository;
 
 
 final class RegisterController extends AbstractController
@@ -26,7 +27,7 @@ final class RegisterController extends AbstractController
         $this->tokenGenerator = $tokenGenerator;
     }
 
-    #[Route('/api/register', name: 'app_register')]
+    #[Route('/api/register', name: 'app_register', methods: ['POST'])]
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
     {
 
@@ -75,5 +76,31 @@ final class RegisterController extends AbstractController
             'message' => 'Inscription réussie !',
             'id' => $user->getId()
         ], 201);
+    }
+
+    #[Route('/verify-token', name: 'app_register')]
+    public function verifyToken(Request $request, UserRepository $userRepository): JSONResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];
+
+        $user = $userRepository->getUserFromToken($token);
+        $token_limit = $user->getTokenLimit();
+        $now = new \DateTimeImmutable();
+
+        if ( $now > $token_limit) {
+            return $this->json([
+                'message' => 'Le lien a expiré'
+            ], 403);
+        }
+
+        $user->setToken(null);
+        $user->setTokenLimit(null);
+        $user->setIsVerified(true);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'Votre compte a été vérifié avec succès !'
+        ]);
     }
 }
