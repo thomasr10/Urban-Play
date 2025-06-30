@@ -85,6 +85,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10)]
     private ?string $gender = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $token_limit = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profil_picture = null;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
@@ -390,6 +402,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGender(string $gender): static
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): static
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getTokenLimit(): ?\DateTime
+    {
+        return $this->token_limit;
+    }
+
+    public function setTokenLimit(?\DateTime $token_limit): static
+    {
+        $this->token_limit = $token_limit;
+
+        return $this;
+    }
+
+    public function getProfilPicture(): ?string
+    {
+        return $this->profil_picture;
+    }
+
+    public function setProfilPicture(?string $profil_picture): static
+    {
+        $this->profil_picture = $profil_picture;
 
         return $this;
     }

@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Service\AgeVerification;
+use App\Service\TokenGenerator;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
@@ -17,13 +18,15 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 final class RegisterController extends AbstractController
 {
     private AgeVerification $ageVerification;
+    private TokenGenerator $tokenGenerator;
 
-    public function __construct(AgeVerification $ageVerification)
+    public function __construct(AgeVerification $ageVerification, TokenGenerator $tokenGenerator)
     {
         $this->ageVerification = $ageVerification;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
-    #[Route('/api/register', name: 'app_register', methods: ['POST'])]
+    #[Route('/api/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
     {
 
@@ -53,6 +56,11 @@ final class RegisterController extends AbstractController
         $user->setPerimeter(5);
         $user->setIsVerified(false);
 
+        // generate token
+        $token = $this->tokenGenerator->generateToken();
+        $user->setToken($token);
+        $user->setTokenLimit((new \DateTime())->modify('+15 minutes'));
+     
         try {
             $em->persist($user);
             $em->flush();
@@ -64,7 +72,8 @@ final class RegisterController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Inscription réussie !'
+            'message' => 'Inscription réussie !',
+            'id' => $user->getId()
         ], 201);
     }
 }

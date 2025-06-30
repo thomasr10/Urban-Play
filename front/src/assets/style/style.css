@@ -144,6 +144,7 @@ input {
   --blue-main: #243B53;
   --white: #FFFFFF;
   --grey-white: #F5F5F5;
+  --light-red: #D44B4B;
   --urban-light: "Urbanist-Light";
   --urban-regular: "Urbanist-Regular";
   --urban-semiBold: "Urbanist-SemiBold";
@@ -163,12 +164,58 @@ body {
 }
 
 .center {
-  margin: 0 auto;
+  margin: 0 auto 100px auto;
 }
 
 #map {
   width: 100%;
   height: 280px;
+}
+
+.loading-msg-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loading-msg-container .loading-message {
+  color: var(--blue-main);
+  font-size: 1rem;
+  font-family: var(--urban-medium);
+}
+
+.menu-container {
+  width: 100%;
+  height: 100px;
+  background-color: var(--grey-white);
+  position: fixed;
+  bottom: 0;
+}
+.menu-container .menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  background-color: var(--orange-main);
+  width: 100%;
+  max-width: 320px;
+  margin: 0.5rem auto;
+  padding: 0 1rem;
+  border-radius: 12px;
+}
+.menu-container .menu .link-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--blue-main);
+}
+.menu-container .menu .link-container .menu-icon {
+  height: 24px;
+  width: 24px;
+}
+.menu-container .menu .link-container span {
+  font-size: 0.8rem;
+  font-family: var(--urban-regular);
+  margin-top: 0.4rem;
 }
 
 .footer {
@@ -204,6 +251,13 @@ body {
   height: 40px;
   border-radius: 32px;
   border: none;
+  margin-top: 24px;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-orange {
@@ -211,6 +265,18 @@ body {
   color: var(--white);
   font-family: var(--urban-bold);
   font-size: 1rem;
+}
+
+.logout-btn {
+  border: none;
+  font-size: 0.9rem;
+  background-color: transparent;
+  font-family: var(--urban-semiBold);
+  color: var(--light-red);
+}
+
+.logout-container {
+  margin-top: 32px;
 }
 
 .h1-form {
@@ -255,14 +321,6 @@ body {
   display: flex;
   justify-content: space-between;
 }
-.form .btn-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.form .btn-container .btn {
-  margin-top: 24px;
-}
 
 .account-link {
   color: var(--blue-main);
@@ -303,6 +361,14 @@ body {
   font-family: var(--urban-medium);
   color: var(--blue-main);
   font-size: 1rem;
+}
+
+input[type=range] {
+  accent-color: var(--blue-main);
+}
+
+input[type=checkbox]:checked {
+  accent-color: var(--blue-main);
 }
 
 .home-unco {
@@ -386,4 +452,91 @@ body {
 }
 .home-connected .search-activities #map {
   margin-top: 24px;
+}
+.home-connected .home-activities {
+  margin-top: 24px;
+}
+.home-connected .home-activities h2 {
+  font-size: 1.5rem;
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+}
+
+.km {
+  color: var(--blue-main);
+  font-size: 0.8rem;
+  font-family: var(--urban-light);
+}
+
+.value {
+  color: var(--blue-main);
+  font-size: 1rem;
+  font-family: var(--urban-regular);
+}
+
+.profil {
+  margin-top: 32px;
+}
+.profil h2 {
+  font-size: 1.2rem;
+  font-family: var(--urban-bold);
+  color: var(--blue-main);
+  margin-top: 24px;
+}
+.profil .profil-top h1 {
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+  font-size: 1.5rem;
+  text-align: center;
+}
+.profil .profil-top figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.profil .profil-content div {
+  margin-top: 16px;
+}
+.profil .profil-content .flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.profil .profil-content .flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+.profil .profil-content .title {
+  font-size: 1rem;
+  font-family: var(--urban-medium);
+  color: var(--blue-main);
+  max-width: 280px;
+}
+.profil .profil-content input[type=range] {
+  width: 100%;
+  max-width: 280px;
+}
+.profil .profil-content textarea {
+  height: 80px;
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--blue-main);
+  font-family: var(--urban-regular);
+  padding: 0.5rem;
+}
+
+.verif-mail {
+  margin-top: 32px;
+}
+.verif-mail h1 {
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+  font-size: 1.5rem;
+  text-align: center;
+}
+.verif-mail p {
+  color: var(--blue-main);
+  margin-top: 16px;
+  font-size: 1rem;
+  font-family: var(--montserrat-regular);
 }/*# sourceMappingURL=style.css.map */

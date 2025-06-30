@@ -39,6 +39,7 @@ function Register() {
             }
             
             alert(data.message);
+            navigate(`/new-user/${data.id}`);
 
         } catch (err) {
             console.error(`Erreur lors de l'inscription : ${err.message}`);

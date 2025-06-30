@@ -8,31 +8,45 @@ function HomeConnected() {
     const [long, setLong] = useState(null);
 
     useEffect(() => {
-        const checkPosition = navigator.geolocation.watchPosition(
+        const watchId = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
                 setLat(latitude);
                 setLong(longitude);
             },
-            (err) => {
-                console.error(err);
-                setLat(48.8566);
-                setLong(2.3522);
+            (error) => {
+                console.error("Erreur géolocalisation :", error);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
             }
         );
 
-        return () => navigator.geolocation.clearWatch(checkPosition);
+        return () => navigator.geolocation.clearWatch(watchId);
     }, []);
-    
+
+
     return (
         <section className="raw-limit-size center home-connected">
-            {/* <Logout/> */}
             <section className="search-activities">
                 <div className="search-container">
-                    <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité"/>
-                    <Search className="search-input"/>
+                    <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité" />
+                    <Search className="search-input" />
                 </div>
-                <Map lat={lat} long={long}/>
+
+                {lat !== null && long !== null ? (
+                    <Map lat={lat} long={long} />
+                ) : (
+                    <div className="loading-msg-container">
+                        <p className="loading-message">Chargement de votre position...</p>
+                    </div>
+                )}
+
+            </section>
+            <section className="home-activities">
+                <h2>Mes prochaines activités</h2>
             </section>
         </section>
     )

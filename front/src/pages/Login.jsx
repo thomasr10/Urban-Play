@@ -59,7 +59,7 @@ function Login() {
                         <Button type="submit">Valider</Button>
                     </div>
                 </form>
-                <Link to='/login' className="account-link">J'ai déjà un compte</Link>
+                <Link to='/register' className="account-link">Je n'ai pas de compte</Link>
             </section>
         </>
     )
