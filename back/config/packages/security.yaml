@@ -23,6 +23,16 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        verify_token:
+            pattern: ^/api/verify-token
+            security: false
+        new_token:
+            pattern: ^/api/new-token
+            security: false
+        new_user_mail:
+            pattern: ^/api/mail/new-user
+            security: false
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -47,6 +57,9 @@ security:
     access_control:
         - { path: ^/api/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/mail/new-user, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/verify-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/new-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

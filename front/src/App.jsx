@@ -9,6 +9,7 @@ import Profil from './pages/Profil';
 import ModifyProfil from './pages/ModifyProfil';
 import NewUser from './pages/NewUser';
 import VerifiyToken from './pages/VerifiyToken';
+import NewToken from './pages/NewToken';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/new-user/:id" element={<NewUser/>} />
         <Route path="/verify-token" element={<VerifiyToken/>} />
+        <Route path="/new-token" element={<NewToken/>} />
         <Route path="/login" element={<Login/>} />
         <Route path='/' element={<Home />} />
         <Route path='/profil' element={<Profil />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 
 function VerifiyToken() {
 
@@ -7,15 +7,14 @@ function VerifiyToken() {
     const token = searchParams.get('token');
     const [message, setMessage] = useState('');
     const [isExpired, setIsExpired] = useState(false);
-    const navigate = useNavigate();
 
     async function sendToken() {
 
         try {
-            const response = await fetch('http://localhost:8000/verify-token', {
+            const response = await fetch(`/api/verify-token`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token })
+                body: JSON.stringify({token})
             });
 
             const data = await response.json();
@@ -28,9 +27,8 @@ function VerifiyToken() {
                 throw new Error(`Erreur http : ${response.status}, ${message}`);
             }
 
-            navigate('/login');
-
             return data;
+
         } catch (err) {
             console.error(err);
         }
@@ -41,13 +39,25 @@ function VerifiyToken() {
     }, []);
 
     return (
-        <section className="raw-limit-size center">
+        <section className="raw-limit-size center verify-user">
             <h1>Vérification de l'utilisateur</h1>
-            <p>{message}</p>
-            {isExpired && (
-                <p>
-                    Le lien a expiré. <Link to="">Renvoyer l’e-mail</Link>
-                </p>
+            {isExpired ? (
+                <>
+                    <p>
+                        Le lien de vérification que vous avez utilisé a expiré.
+                        Pas de panique ! Vous pouvez en demander un nouveau pour activer votre compte.
+                    </p>
+                    <div className="btn-container">
+                        <Link to={`/new-token?expired_token=${token}`}>Renvoyer l’e-mail</Link>
+                    </div>
+                </>
+            ) : (
+                <>
+                    <p>{ message }</p>
+                    <div className="btn-container">
+                        <Link to='/login'>Se connecter</Link>
+                    </div>
+                </>
             )}
         </section>
     )

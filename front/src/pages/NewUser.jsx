@@ -8,7 +8,7 @@ function NewUser () {
     async function sendMail () {
         
         try {
-            const response = await fetch('http://localhost:8000/mail/new-user', {
+            const response = await fetch('/api/mail/new-user', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ id })
@@ -44,4 +44,4 @@ function NewUser () {
     )
 }
 
-export default NewUser
+export default NewUser;

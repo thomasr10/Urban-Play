@@ -146,6 +146,7 @@ input {
 
 :root {
     --orange-main: #F28D41;
+    --orange-hover: #F37C22;
     --blue-main: #243B53;
     --white: #FFFFFF;
     --grey-white: #F5F5F5;
@@ -270,6 +271,10 @@ body {
     border-radius: 32px;
     border: none;
     margin-top: 24px;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .btn-container {
@@ -283,6 +288,11 @@ body {
     color: var(--white);
     font-family: var(--urban-bold);
     font-size: 1rem;
+    transition: all ease-in 0.25s;
+    
+    &:hover {
+        background-color: var(--orange-hover);
+    }
 }
 
 .logout-btn {
@@ -602,5 +612,33 @@ input[type="checkbox"] {
         margin-top: 16px;
         font-size: 1rem;
         font-family: var(--montserrat-regular);
+    }
+}
+
+.verify-user {
+    margin-top: 32px;
+
+    h1 {
+        font-size: 1.5rem;
+        color: var(--blue-main);
+        font-family: var(--urban-bold);
+        text-align: center;
+    }
+
+    p {
+        color: var(--blue-main);
+        font-size: 1rem;
+        font-family: var(--urban-medium);
+        margin-top: 16px;
+        text-align: center;
+    }
+    
+    .btn-container {
+        margin-top: 16px;
+        a {
+            color: var(--blue-main);
+            font-size: 1.2rem;
+            font-family: var(--urban-medium);
+        }
     }
 }

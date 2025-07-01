@@ -91,8 +91,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTime $token_limit = null;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $tokenLimit = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profil_picture = null;
@@ -430,15 +430,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTokenLimit(): ?\DateTime
+    public function getTokenLimit(): ?\DateTimeImmutable
     {
-        return $this->token_limit;
+        return $this->tokenLimit;
     }
 
-    public function setTokenLimit(?\DateTime $token_limit): static
+    public function setTokenLimit(?\DateTimeImmutable $tokenLimit): self
     {
-        $this->token_limit = $token_limit;
-
+        $this->tokenLimit = $tokenLimit;
         return $this;
     }
 

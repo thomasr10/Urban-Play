@@ -141,6 +141,7 @@ input {
 }
 :root {
   --orange-main: #F28D41;
+  --orange-hover: #F37C22;
   --blue-main: #243B53;
   --white: #FFFFFF;
   --grey-white: #F5F5F5;
@@ -253,6 +254,9 @@ body {
   border: none;
   margin-top: 24px;
 }
+.btn:hover {
+  cursor: pointer;
+}
 
 .btn-container {
   display: flex;
@@ -265,6 +269,10 @@ body {
   color: var(--white);
   font-family: var(--urban-bold);
   font-size: 1rem;
+  transition: all ease-in 0.25s;
+}
+.btn-orange:hover {
+  background-color: var(--orange-hover);
 }
 
 .logout-btn {
@@ -539,4 +547,29 @@ input[type=checkbox]:checked {
   margin-top: 16px;
   font-size: 1rem;
   font-family: var(--montserrat-regular);
+}
+
+.verify-user {
+  margin-top: 32px;
+}
+.verify-user h1 {
+  font-size: 1.5rem;
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+  text-align: center;
+}
+.verify-user p {
+  color: var(--blue-main);
+  font-size: 1rem;
+  font-family: var(--urban-medium);
+  margin-top: 16px;
+  text-align: center;
+}
+.verify-user .btn-container {
+  margin-top: 16px;
+}
+.verify-user .btn-container a {
+  color: var(--blue-main);
+  font-size: 1.2rem;
+  font-family: var(--urban-medium);
 }/*# sourceMappingURL=style.css.map */

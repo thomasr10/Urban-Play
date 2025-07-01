@@ -60,7 +60,7 @@ final class RegisterController extends AbstractController
         // generate token
         $token = $this->tokenGenerator->generateToken();
         $user->setToken($token);
-        $user->setTokenLimit((new \DateTime())->modify('+15 minutes'));
+        $user->setTokenLimit((new \DateTimeImmutable())->modify('+15 minutes'));
      
         try {
             $em->persist($user);
@@ -78,19 +78,20 @@ final class RegisterController extends AbstractController
         ], 201);
     }
 
-    #[Route('/verify-token', name: 'app_register')]
-    public function verifyToken(Request $request, UserRepository $userRepository): JSONResponse
-    {
-        $data = json_decode($request->getContent(), true);
+    #[Route('/api/verify-token', name: 'app_verify_token', methods: ['POST'])]
+    public function verifyToken(Request $request, UserRepository $userRepository, EntityManagerInterface $em): JSONResponse
+    {   
+        $data = json_decode( $request->getContent(), true);
         $token = $data['token'];
-
         $user = $userRepository->getUserFromToken($token);
         $token_limit = $user->getTokenLimit();
         $now = new \DateTimeImmutable();
 
         if ( $now > $token_limit) {
             return $this->json([
-                'message' => 'Le lien a expiré'
+                'message' => 'Le lien a expiré',
+                'tokenLim' => $token_limit,
+                'now' => $now
             ], 403);
         }
 
@@ -101,6 +102,23 @@ final class RegisterController extends AbstractController
 
         return $this->json([
             'message' => 'Votre compte a été vérifié avec succès !'
+        ]);
+    }
+
+    #[Route('/api/new-token', name: 'app_new_token')]
+    public function newToken(Request $request, UserRepository $userRepository, EntityManagerInterface $em): JSONResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['token'];
+        $user = $userRepository->getUserFromToken($token);
+        $newToken = $this->tokenGenerator->generateToken();
+        $user->setToken($newToken);
+        $user->setTokenLimit((new \DateTimeImmutable())->modify('+15 minutes'));
+        $em->flush();
+        
+        return $this->json([
+            'message' => 'Nouveau token envoyé',
+            'id' => $user->getId()
         ]);
     }
 }

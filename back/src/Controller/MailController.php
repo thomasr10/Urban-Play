@@ -14,7 +14,7 @@ use App\Repository\UserRepository;
 
 final class MailController extends AbstractController
 {
-    #[Route('/mail/new-user', name: 'app_mail_new_user')]
+    #[Route('/api/mail/new-user', name: 'app_mail_new_user')]
     public function verificationMail(Request $request,  UserRepository $userRepository, MailerInterface $mailer): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -34,7 +34,12 @@ final class MailController extends AbstractController
 
 
         return $this->json([
-            'message' => 'E-mail envoyé à votre adresse mail.',
+            'message' => 'E-mail envoyé à votre adresse mail.'
         ]);
+    }
+
+    public function sendNewVerificationMail()
+    {
+        // suite du code
     }
 }
