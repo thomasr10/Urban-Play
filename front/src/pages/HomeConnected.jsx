@@ -1,11 +1,46 @@
-import Logout from "../components/Logout";
 import { Search } from 'lucide-react';
 import Map from "../components/Map";
 import { useEffect, useState } from "react";
+import { getUserInfos } from "../api/userInfo";
 
 function HomeConnected() {
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
+    const token = localStorage.getItem('token');
+    const [perimeter, setPerimeter] = useState('');
+
+    useEffect(() => {
+        getUserInfos().then((data) => {
+            setPerimeter(data.perimeter);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }, [])
+
+    async function getSportsLocation() {
+
+        try {
+            const response = await fetch('/api/sports-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({userInfos: { lat: lat, long: long, perimeter: perimeter}})
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     useEffect(() => {
         const watchId = navigator.geolocation.watchPosition(
@@ -26,6 +61,10 @@ function HomeConnected() {
 
         return () => navigator.geolocation.clearWatch(watchId);
     }, []);
+
+    useEffect(() => {
+        getSportsLocation();
+    }, [])
 
 
     return (
