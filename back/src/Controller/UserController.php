@@ -9,6 +9,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 
 final class UserController extends AbstractController
 {
@@ -51,20 +55,40 @@ final class UserController extends AbstractController
         $latitude = $data['userInfos']['lat'];
         $longitude = $data['userInfos']['long'];
         $perimeter = $data['userInfos']['perimeter'];
+        $perimeter = intval($perimeter) * 1000;
 
-        $baseUrl = $this->param->get('app.base_url');
-        
-        $apiResponse = $httpClient->request('GET', $baseUrl, [
-            'query' => [
-                'refine.equip_type_name' => 'Multisports/City-stades',
-                'refine.inst_part_type_filter' => 'Complexe sportif',
-                'refine.aps_name' => 'Football/Football en salle (Futsal)'
-            ]
-        ]);
-        var_dump($apiResponse->toArray());
+        if ($latitude === null || $longitude === null || $perimeter === null) {
+            return $this->json([
+                'message' => 'Coordonnées manquantes'
+            ]);
+        }
 
-        return $this->json([
-            'message' => 'test'
-        ]);
+        try {
+            $baseUrl = $this->param->get('app.base_url');
+
+            $url = $baseUrl . "?dataset=data-es&rows=20&refine.equip_type_name=Multisports%2FCity-stades&refine.inst_part_type_filter=Complexe%20sportif&geofilter.distance=$latitude, $longitude, $perimeter";
+
+            $apiResponse = $httpClient->request('GET', $url);
+            $data = $apiResponse->toArray();
+
+            if (empty($data['records'])) {
+                return $this->json([
+                    'message' => 'Aucun résultat trouvé'
+                ]);
+            }
+
+            
+            return $this->json([
+                'message' => 'Données récupérées',
+                'data' => $data
+            ]);
+
+        } catch (TransportExceptionInterface | ClientExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface $e) {
+            
+            return $this->json([
+                'message' => 'Erreur lors de l\'appel à l\'API'
+            ], 500);
+        }
+
     }
 }

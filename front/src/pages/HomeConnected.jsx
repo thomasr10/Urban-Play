@@ -7,7 +7,8 @@ function HomeConnected() {
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
     const token = localStorage.getItem('token');
-    const [perimeter, setPerimeter] = useState('');
+    const [perimeter, setPerimeter] = useState(null);
+    const [markers, setMarkers] = useState([]);
 
     useEffect(() => {
         getUserInfos().then((data) => {
@@ -63,8 +64,19 @@ function HomeConnected() {
     }, []);
 
     useEffect(() => {
-        getSportsLocation();
-    }, [])
+        if (lat !== null && long !== null && perimeter !== null) {
+            getSportsLocation()
+            .then((data) => {
+                if (Object.keys(data.data).length > 0){
+                    console.log(data);
+                    setMarkers(data.data.records.geometry);
+                    console.log(markers)
+                } else {
+                    console.error(data.message);
+                }
+            });
+        }
+    }, [lat, long, perimeter])
 
 
     return (
