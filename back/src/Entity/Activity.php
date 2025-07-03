@@ -22,9 +22,6 @@ class Activity
     #[ORM\Column(length: 255)]
     private ?string $location_name = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $location_coordinates = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
@@ -53,6 +50,15 @@ class Activity
      */
     #[ORM\OneToMany(targetEntity: GroupChat::class, mappedBy: 'activity')]
     private Collection $groupChats;
+
+    #[ORM\Column(length: 255)]
+    private ?string $location_latitude = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $location_longitude = null;
+
+    #[ORM\Column]
+    private ?bool $is_done = null;
 
     public function __construct()
     {
@@ -85,18 +91,6 @@ class Activity
     public function setLocationName(string $location_name): static
     {
         $this->location_name = $location_name;
-
-        return $this;
-    }
-
-    public function getLocationCoordinates(): ?string
-    {
-        return $this->location_coordinates;
-    }
-
-    public function setLocationCoordinates(string $location_coordinates): static
-    {
-        $this->location_coordinates = $location_coordinates;
 
         return $this;
     }
@@ -217,6 +211,42 @@ class Activity
                 $groupChat->setActivity(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocationLatitude(): ?string
+    {
+        return $this->location_latitude;
+    }
+
+    public function setLocationLatitude(string $location_latitude): static
+    {
+        $this->location_latitude = $location_latitude;
+
+        return $this;
+    }
+
+    public function getLocationLongitude(): ?string
+    {
+        return $this->location_longitude;
+    }
+
+    public function setLocationLongitude(string $location_longitude): static
+    {
+        $this->location_longitude = $location_longitude;
+
+        return $this;
+    }
+
+    public function isDone(): ?bool
+    {
+        return $this->is_done;
+    }
+
+    public function setIsDone(bool $is_done): static
+    {
+        $this->is_done = $is_done;
 
         return $this;
     }

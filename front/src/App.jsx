@@ -10,6 +10,7 @@ import ModifyProfil from './pages/ModifyProfil';
 import NewUser from './pages/NewUser';
 import VerifiyToken from './pages/VerifiyToken';
 import NewToken from './pages/NewToken';
+import CreateActivity from './pages/CreateActivity';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/profil' element={<Profil />} />
         <Route path='/modifier-profil' element={<ModifyProfil />} />
+        <Route path='/activite/creer' element={<CreateActivity />} />
       </Routes>
       <Menu/>
     </AuthProvider>

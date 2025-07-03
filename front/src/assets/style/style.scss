@@ -151,6 +151,7 @@ input {
     --white: #FFFFFF;
     --grey-white: #F5F5F5;
     --light-red: #D44B4B;
+    --modal-bg: #00000036;
 
     --urban-light: 'Urbanist-Light';
     --urban-regular: 'Urbanist-Regular';
@@ -509,6 +510,13 @@ input[type="checkbox"] {
         #map {
             margin-top: 24px;
         }
+
+        .map-result {
+            color: var(--blue-main);
+            font-family: var(--urban-light);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
     }
 
     .home-activities {
@@ -638,6 +646,66 @@ input[type="checkbox"] {
         a {
             color: var(--blue-main);
             font-size: 1.2rem;
+            font-family: var(--urban-medium);
+        }
+    }
+}
+
+.modal-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-color: var(--modal-bg);
+    z-index: 999999;
+
+    .modal {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--grey-white);
+        border-radius: 12px;
+
+        .x-icon {
+            position: absolute;
+            top: .3rem;
+            right: .3rem;
+            color: var(--blue-main);
+            width: 20px;
+        }
+        
+        h1 {
+            color: var(--blue-main);
+            font-size: 1.5rem;
+            font-family: var(--urban-bold);
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .info-container {
+            text-align: center;
+            h2 {
+                color: var(--blue-main);
+                font-size: 1.2rem;
+                font-family: var(--urban-semiBold);
+            }
+            p {
+                color: var(--blue-main);
+                font-family: var(--urban-regular);
+                font-size: 1rem;
+                margin-top: 8px;
+            }
+        }
+
+        a {
+            color: var(--blue-main);
+            text-align: center;
+            font-size: 1rem;
+            margin-top: 8px;
             font-family: var(--urban-medium);
         }
     }

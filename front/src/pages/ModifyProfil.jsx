@@ -23,14 +23,14 @@ function ModifyProfil() {
         }).catch((err) => console.error(err));
     }, []);
 
-    // async function validateUserData() {
+    async function validateUserData() {
         
-    //     try {
+        try {
 
-    //     } catch (err) {
+        } catch (err) {
             
-    //     }
-    // }
+        }
+    }
 
     return (
         <section className="profil raw-limit-size center">

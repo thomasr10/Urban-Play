@@ -8,7 +8,6 @@ function Profil() {
 
     useEffect(() => {
         getUserInfos().then((data) => {
-            console.log(data)
             setActivities(data.activities);
         }).catch((err) => console.error(err));        
     }, [])
