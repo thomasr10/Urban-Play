@@ -147,6 +147,7 @@ input {
   --grey-white: #F5F5F5;
   --light-red: #D44B4B;
   --modal-bg: #00000036;
+  --light-gray: rgba(192, 188, 188, 0.822);
   --urban-light: "Urbanist-Light";
   --urban-regular: "Urbanist-Regular";
   --urban-semiBold: "Urbanist-SemiBold";
@@ -158,6 +159,14 @@ input {
 
 body {
   background-color: var(--grey-white);
+}
+
+section h1 {
+  font-size: 1.5rem;
+  color: var(--blue-main);
+  font-family: var(--urban-bold);
+  text-align: center;
+  margin-top: 24px;
 }
 
 .raw-limit-size {
@@ -178,6 +187,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 280px;
+  width: 100%;
+  background-color: var(--light-gray);
+  margin-top: 16px;
 }
 .loading-msg-container .loading-message {
   color: var(--blue-main);
@@ -263,6 +276,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 32px;
 }
 
 .btn-orange {
@@ -329,6 +343,28 @@ body {
 .form .input-container {
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
+}
+.form .flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  color: var(--blue-main);
+  font-size: 1rem;
+  color: var(--blue-main);
+  font-family: var(--urban-medium);
+}
+.form p {
+  color: var(--blue-main);
+  font-family: var(--urban-medium);
+  font-size: 1rem;
+}
+.form textarea {
+  margin-top: 8px;
+  height: 80px;
+  color: var(--blue-main);
+  font-family: var(--urban-medium);
+  padding: 0.4rem;
 }
 
 .account-link {
@@ -589,7 +625,7 @@ input[type=checkbox]:checked {
   background-color: var(--modal-bg);
   z-index: 999999;
 }
-.modal-bg .modal {
+.modal-bg .modal, .modal-bg .modal-info {
   width: 100%;
   max-width: 360px;
   height: auto;
@@ -599,6 +635,23 @@ input[type=checkbox]:checked {
   transform: translate(-50%, -50%);
   background-color: var(--grey-white);
   border-radius: 12px;
+}
+.modal-bg .modal-info {
+  padding: 32px 0;
+}
+.modal-bg .modal-info h1 {
+  font-size: 2rem;
+  text-align: center;
+  font-family: var(--urban-bold);
+  color: var(--orange-main);
+  margin-top: 16px;
+}
+.modal-bg .modal-info p {
+  color: var(--blue-main);
+  text-align: center;
+  font-size: 1.4rem;
+  font-family: var(--urban-bold);
+  margin-top: 16px;
 }
 .modal-bg .modal .x-icon {
   position: absolute;

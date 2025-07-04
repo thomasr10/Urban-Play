@@ -25,7 +25,7 @@ class Activity
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'date_immutable')]
     private ?\DateTimeImmutable $activity_date = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -59,6 +59,18 @@ class Activity
 
     #[ORM\Column]
     private ?bool $is_done = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTime $hour_from = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTime $hour_to = null;
+
+    #[ORM\Column]
+    private ?int $max_players = null;
+
+    #[ORM\Column]
+    private ?int $current_players = null;
 
     public function __construct()
     {
@@ -247,6 +259,54 @@ class Activity
     public function setIsDone(bool $is_done): static
     {
         $this->is_done = $is_done;
+
+        return $this;
+    }
+
+    public function getHourFrom(): ?\DateTime
+    {
+        return $this->hour_from;
+    }
+
+    public function setHourFrom(\DateTime $hour_from): static
+    {
+        $this->hour_from = $hour_from;
+
+        return $this;
+    }
+
+    public function getHourTo(): ?\DateTime
+    {
+        return $this->hour_to;
+    }
+
+    public function setHourTo(\DateTime $hour_to): static
+    {
+        $this->hour_to = $hour_to;
+
+        return $this;
+    }
+
+    public function getMaxPlayers(): ?int
+    {
+        return $this->max_players;
+    }
+
+    public function setMaxPlayers(int $max_players): static
+    {
+        $this->max_players = $max_players;
+
+        return $this;
+    }
+
+    public function getCurrentPlayers(): ?int
+    {
+        return $this->current_players;
+    }
+
+    public function setCurrentPlayers(int $current_players): static
+    {
+        $this->current_players = $current_players;
 
         return $this;
     }
