@@ -26,7 +26,14 @@ function ModifyProfil() {
     async function validateUserData() {
         
         try {
-
+            const response = await fetch('/api/user/modify', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({bio, isPublic, isActivityNotification, perimter})
+            })
         } catch (err) {
             
         }

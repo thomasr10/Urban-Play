@@ -46,11 +46,12 @@ function Map({ lat = 48.8566, long = 2.3522, zoom = 13, markers = [], onMarkerCl
             iconAnchor: [20, 40]
         })
 
+        // On set les markers. Le tableau data correspond au tableau arrayCoordinates de Homepage
         const layerGroup = L.layerGroup();
         markers.forEach((data) => {
             const newMarker = L.marker([data[0][1], data[0][0]], {icon: sportIcon}).addTo(layerGroup);
             newMarker.addEventListener('click', () => {
-                onMarkerClick({coords: data[0], name: data[1]});
+                onMarkerClick({coords: data[0], name: data[1], adress: data[2]});
             });
         });
 

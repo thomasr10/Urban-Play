@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @extends ServiceEntityRepository<Activity>
@@ -19,7 +20,7 @@ class ActivityRepository extends ServiceEntityRepository
    /**
     * @return Activity[] Returns an array of Activity objects
     */
-   public function getFutureActivitiesFromLocation($lat, $long): array
+   public function getFutureActivitiesFromLocation(float $lat, float $long): array
    {
        return $this->createQueryBuilder('a')
            ->select('a', 'sport', 'user')
@@ -30,14 +31,14 @@ class ActivityRepository extends ServiceEntityRepository
            ->andWhere('a.is_done = 0')
            ->setParameter('lat', $lat)
            ->setParameter('long', $long)
-           ->orderBy('a.id', 'ASC')
+           ->orderBy('a.id', 'DESC')
            ->setMaxResults(10)
            ->getQuery()
            ->getArrayResult()
        ;
    }
 
-   public function getActivityFromLocationDateTime($coords, \DateTimeImmutable $date, \DateTime $from, \DateTime $to): array
+   public function getActivityFromLocationDateTime(array $coords, \DateTimeImmutable $date, \DateTime $from, \DateTime $to): array
    {
         return $this->createQueryBuilder('a')
             ->andWhere('a.location_latitude = :lat')
@@ -55,13 +56,19 @@ class ActivityRepository extends ServiceEntityRepository
         ;
    }
 
-//    public function findOneBySomeField($value): ?Activity
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+   public function getUserFutureActivities(User $user, array $groupChat): array
+   {
+        return $this->createQueryBuilder('a')
+            ->select('a', 'gc')
+            ->andWhere('a.user_id = :user')
+            ->orWhere('a.id in (:groupChat)')
+            ->andWhere('is_done = 0')
+            ->setParameter('user', $user)
+            ->setParameter('groupChat', $groupChat)
+            ->getQuery()
+            ->getResult()
+        ;
+   }
+
+
 }

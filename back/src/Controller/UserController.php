@@ -13,6 +13,10 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use App\Repository\ActivityRepository;
+use App\Repository\UserRepository;
+use App\Repository\UserGroupChatRepository;
+use App\Repository\GroupChatRepository;
 
 final class UserController extends AbstractController
 {
@@ -90,5 +94,21 @@ final class UserController extends AbstractController
             ], 500);
         }
 
+    }
+
+    #[Route('/api/user/future-activities', name: 'app_user_future_activities', methods: ['POST'])]
+    public function getUserFutureActivities(Request $request, ActivityRepository $activityRepository, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $userId = $data['userId'];
+
+        $userEntity = $userRepository->findOneById($userId);
+        $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
+        $futureActivities = $activityRepository->getUserFutureActivities($userEntity, $groupChat);
+
+        return $this->json([
+            'message' => 'test'
+        ]);
     }
 }

@@ -67,7 +67,7 @@ final class ActivityController extends AbstractController
         $activity->setIsdone(false);
         $activity->setHourFrom(new \DateTime($data['from']));
         $activity->setHourTo(new \DateTime($data['to']));
-        $activity->setMaxPlayers($data['player']);
+        $activity->setMaxPlayers($data['players']);
         $activity->setCurrentPlayers(1);
 
         $em->persist($activity);

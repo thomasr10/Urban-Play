@@ -12,21 +12,26 @@ function HomeConnected() {
     const [markers, setMarkers] = useState([]);
     const [countResult, setCountResult] = useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null);
+    const [userId, setUserId] = useState(null);
 
-    const openModal = ({ coords, name }) => {
-        setSelectedMarker({ coords, name });
+    const openModal = ({ coords, name, adress }) => {
+        setSelectedMarker({ coords, name, adress });
     }
 
     const closeModal = () => setSelectedMarker(null);
     
+    // Récupérer les infos du user (périmètre pour établir la recherche)
     useEffect(() => {
         getUserInfos().then((data) => {
+            console.log(data)
             setPerimeter(data.perimeter);
+            setUserId(data.id);
         }).catch((err) => {
             console.error(err);
         });
-    }, [])
+    }, []);
 
+    // Récupérer les lieux sportifs via l'api du gvt
     async function getSportsLocation() {
 
         try {
@@ -52,6 +57,7 @@ function HomeConnected() {
         }
     }
 
+    // Récupérer la loc du user
     useEffect(() => {
         const watchId = navigator.geolocation.watchPosition(
             (position) => {
@@ -80,9 +86,9 @@ function HomeConnected() {
                     if (Object.keys(data.data).length > 0) {
                         console.log(data.data)
                         const arrayCoordinates = [];
-                        // on met les coordonnées dans un tableau
+                        // on met les coordonnées dans un tableau que l'on passera au composant Map
                         data.data.records.forEach(location => {
-                            arrayCoordinates.push([location.geometry.coordinates, location.fields.inst_nom])
+                            arrayCoordinates.push([location.geometry.coordinates, location.fields.inst_nom, location.fields.inst_adresse])
                         });
                         // on passe ce tableau à notre const useState
                         setMarkers(arrayCoordinates);
@@ -92,8 +98,42 @@ function HomeConnected() {
                     }
                 });
         }
-    }, [lat, long, perimeter])
+    }, [lat, long, perimeter]);
 
+
+    // Récupérer les futures activités du user
+
+    async function getUserFutureActivities() {
+        try {
+            const response = await fetch('/api/user/future-activities', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ userId })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        if (userId) {
+            getUserFutureActivities().then((data) => {
+                console.log(data);
+            });
+        }
+    }, [userId])
 
     return (
         <>
@@ -125,7 +165,7 @@ function HomeConnected() {
 
             {
                 selectedMarker && (
-                    <ActivityModal  coordinates={selectedMarker.coords} name={selectedMarker.name} onClose={closeModal}/>
+                    <ActivityModal  coordinates={selectedMarker.coords} name={selectedMarker.name} adress={selectedMarker.adress} onClose={closeModal}/>
                 )
             }
 

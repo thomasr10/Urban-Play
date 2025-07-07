@@ -16,20 +16,21 @@ class GroupChatRepository extends ServiceEntityRepository
         parent::__construct($registry, GroupChat::class);
     }
 
-//    /**
-//     * @return GroupChat[] Returns an array of GroupChat objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('g.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+   /**
+    * @return GroupChat[] Returns an array of GroupChat objects
+    */
+   public function getGroupChatByUserGC(array $userGC): array
+   {
+       return $this->createQueryBuilder('gc')
+           ->select('gc', 'activity')
+           ->join('gc.activity', 'activity')
+           ->andWhere('gc IN (:arrayUserGC)')
+           ->setParameter('arrayUserGC', $userGC)
+           ->orderBy('gc.id', 'DESC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
 
 //    public function findOneBySomeField($value): ?GroupChat
 //    {

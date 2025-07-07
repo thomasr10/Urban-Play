@@ -9,6 +9,7 @@ function CreateActivity() {
     const location = useLocation();
     const { coords } = location.state;
     const { locationName } = location.state;
+    const { adress } = location.state;
 
     const [modalVisibility, setModalVisibility] = useState(false);
     const [modalData, setModalData] = useState({});
@@ -156,7 +157,7 @@ function CreateActivity() {
                     </div>
                     <div>
                         <label htmlFor="num">Nombre de participants</label>
-                        <input type="number" name="num" id="num" min={3} max={15} required value={players} onChange={e => setPlayers(e.target.value)} />
+                        <input type="number" name="num" id="num" min={1} max={15} required value={players} onChange={e => setPlayers(e.target.value)} />
                     </div>
                 </section>
                 <div>

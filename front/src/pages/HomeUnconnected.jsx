@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Map from "../components/Map";
+import Button from "../components/Button"
 
 function HomeUnconnected() {
 
@@ -20,6 +21,9 @@ function HomeUnconnected() {
                 <p>Grâce à une carte intéractive, tu peux voir où et quand se dérouleront les prochaines activités. Tu veux lancer ton propre match ? Crée une activité, choisis ton lieu et laisse les joueurs du coin s’y inscrire librement.</p>
                 <p>Plus besoin d’attendre que ça s’organise : Urban Play fait du sport un réflexe local et spontané.</p>
             </section>
+            <div className="btn-container">
+                {/* <Button to={'/register'}>S'inscrire</Button> */}
+            </div>
         </section>
         <footer className="footer">
             <div className="links">
