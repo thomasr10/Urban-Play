@@ -11,6 +11,7 @@ import NewUser from './pages/NewUser';
 import VerifiyToken from './pages/VerifiyToken';
 import NewToken from './pages/NewToken';
 import CreateActivity from './pages/CreateActivity';
+import ActivityPage from './pages/ActivityPage';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/new-token" element={<NewToken/>} />
         <Route path="/login" element={<Login/>} />
         <Route path='/' element={<Home />} />
+        <Route path='/activite/:id' element={<ActivityPage />} />
         <Route path='/profil' element={<Profil />} />
         <Route path='/modifier-profil' element={<ModifyProfil />} />
         <Route path='/activite/creer' element={<CreateActivity />} />

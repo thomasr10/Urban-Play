@@ -11,6 +11,7 @@ use App\Repository\SportRepository;
 use App\Repository\UserRepository;
 use App\Entity\Activity;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 final class ActivityController extends AbstractController
 {
@@ -77,6 +78,32 @@ final class ActivityController extends AbstractController
             'message' => 'Activité créée avec succès !',
             'success' => true,
             'id' => $activity->getId()
+        ]);
+    }
+
+    // ParamConverter = on idique qu'on attend une entité Activity avec l'id dans l'url doctrine va la chercher automatiquement dans la bdd
+    #[Route('/api/activity/{id}', name: 'app_activity_id', methods: ['GET'])]
+    public function getActivityInfos(Activity $activity): JSONResponse
+    {
+        return $this->json([
+            'success' => true,
+            'activity' => [
+                'id' => $activity->getId(),
+                'sport' => $activity->getSport(),
+                'user' => $activity->getUser(),
+                'name' => $activity->getName(),
+                'location_name' => $activity->getLocationName(),
+                'location_latitude' => $activity->getLocationLatitude(),
+                'location_longitude' => $activity->getLocationLongitude(),
+                'created_at' => $activity->getCreatedAt(),
+                'activity_date' => $activity->getActivityDate(),
+                'description' => $activity->getDescription(),
+                'is_done' => $activity->isDone(),
+                'hour_from' => $activity->getHourFrom(),
+                'hour_to' => $activity->getHourTo(),
+                'current_players' => $activity->getCurrentPlayers(),
+                'max_players' => $activity->getMaxPlayers()
+            ]
         ]);
     }
 }
