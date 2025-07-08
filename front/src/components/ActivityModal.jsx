@@ -2,25 +2,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { X } from 'lucide-react'
 import ActivityList from "./ActivityList";
+import { capitalizeText } from "../assets/js/capitalizeText";
 
 function ActivityModal ({coordinates, name, adress, onClose}) {
 
     const [arrayActivities, setArrayActivities] = useState([]);
-    
-    // le nom du lieu est stocké en uppercase (va savoir pourquoi) dcp je le rends + stylé
-    function capitalizeText(string) {
-        let newString = '';
-        
-        for(let i = 0; i <= string.length; i++) {
-            if (string[i] === string[0] || string[i - 1] === ' ' || string[i - 1] === '"' || string[i - 1] === '-') {
-                newString += string.charAt(i);
-            } else {
-                newString += string.charAt(i).toLowerCase();
-            }
-        }
-
-        return newString;
-    }
     
     async function getActivitiesFromLocation() {
         

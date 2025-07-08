@@ -6,6 +6,7 @@ use App\Entity\Activity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Activity>
@@ -56,17 +57,32 @@ class ActivityRepository extends ServiceEntityRepository
         ;
    }
 
-   public function getUserFutureActivities(User $user, array $groupChat): array
+   public function getUserFutureActivities(User $user): array
    {
         return $this->createQueryBuilder('a')
-            ->select('a', 'gc')
-            ->andWhere('a.user_id = :user')
-            ->orWhere('a.id in (:groupChat)')
-            ->andWhere('is_done = 0')
+            ->select('a', 's', 'u')
+            ->join('a.user', 'u')
+            ->join('a.sport', 's')
+            ->andWhere('a.user = :user')
+            ->andWhere('a.is_done = 0')
+            ->andWhere("CONCAT(a.activity_date, ' ', a.hour_from)>= CURRENT_TIMESTAMP()")
             ->setParameter('user', $user)
-            ->setParameter('groupChat', $groupChat)
+            ->orderBy('a.activity_date', 'ASC')
             ->getQuery()
-            ->getResult()
+            ->getArrayResult()
+        ;
+   }
+
+   public function getActivityInfos(Activity $activity): array
+   {
+        return $this->createQueryBuilder('a')
+            ->select('a', 'u', 's')
+            ->join('a.user', 'u')
+            ->join('a.sport', 's')
+            ->andWhere('a = :activity')
+            ->setParameter('activity', $activity)
+            ->getQuery()
+            ->getOneOrNullResult(Query::HYDRATE_ARRAY)
         ;
    }
 

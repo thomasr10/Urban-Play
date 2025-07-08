@@ -1,8 +1,10 @@
-import { Search } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import Map from "../components/Map";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { getUserInfos } from "../api/userInfo";
 import ActivityModal from "../components/ActivityModal";
+import UserFutureActivities from '../components/UserFutureActivity';
+import { useNavigate } from 'react-router-dom';
 
 function HomeConnected() {
     const [lat, setLat] = useState(null);
@@ -13,13 +15,21 @@ function HomeConnected() {
     const [countResult, setCountResult] = useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [futureActivities, setFutureActivities] = useState([]);
+    const navigate = useNavigate();
 
     const openModal = ({ coords, name, adress }) => {
         setSelectedMarker({ coords, name, adress });
     }
 
     const closeModal = () => setSelectedMarker(null);
-    
+
+    // Redirection pour la liste d'activités
+
+    function goToActivity(id) {
+        navigate(`/activite/${id}`);
+    }
+
     // Récupérer les infos du user (périmètre pour établir la recherche)
     useEffect(() => {
         getUserInfos().then((data) => {
@@ -130,7 +140,10 @@ function HomeConnected() {
     useEffect(() => {
         if (userId) {
             getUserFutureActivities().then((data) => {
-                console.log(data);
+                if (data.success === true) {
+                    console.log(data.futureActivities)
+                    setFutureActivities(data.futureActivities);
+                }
             });
         }
     }, [userId])
@@ -158,6 +171,18 @@ function HomeConnected() {
                 </section>
                 <section className="home-activities">
                     <h2>Mes prochaines activités</h2>
+                    <div className='future-activities-container'>
+                        {
+                            futureActivities.length > 0 ? (
+                                
+                                futureActivities.map((activity) => (
+                                    <UserFutureActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
+                                ))
+
+                            ) : 
+                                <p className='no-activity-msg'>Aucune activité prévue prochainement</p>
+                        }
+                    </div>
                 </section>
             </section>
 
@@ -165,7 +190,7 @@ function HomeConnected() {
 
             {
                 selectedMarker && (
-                    <ActivityModal  coordinates={selectedMarker.coords} name={selectedMarker.name} adress={selectedMarker.adress} onClose={closeModal}/>
+                    <ActivityModal coordinates={selectedMarker.coords} name={selectedMarker.name} adress={selectedMarker.adress} onClose={closeModal} />
                 )
             }
 

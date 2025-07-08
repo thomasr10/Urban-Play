@@ -95,7 +95,7 @@ function CreateActivity() {
                     title: 'Félicitations',
                     message: data.message,
                     btnMessage: 'Voir l\'activité',
-                    to: `/activity/${data.id}`,
+                    to: `/activite/${data.id}`,
                     onClose: null
                 });
                 setModalVisibility(true);

@@ -102,13 +102,33 @@ final class UserController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $userId = $data['userId'];
 
+        if (!$userId) {
+            return $this->json([
+                'message' => 'Utilisateur non défini',
+                'success' => false
+            ]);
+        }
+        // On récupère l'entité user à partir de l'id
         $userEntity = $userRepository->findOneById($userId);
+
+        // On récupère les entités UserGroupChat auquel le user est lié
         $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+        // On récupère les entités GroupChat pour avoir les entités Activity auquel le user est lié mais qu'il n'a pas créé
         $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
-        $futureActivities = $activityRepository->getUserFutureActivities($userEntity, $groupChat);
+
+        // On récupère les activités que le user a créées
+        $futureActivities = $activityRepository->getUserFutureActivities($userEntity);
+
+        // On boucle sur les entités GroupChat pour récupérer toutes les infos de l'entité Activity (User et Sport) lié à chaque entité GroupChat
+        foreach ($groupChat as $joinedActivity) {
+            $activityInfos = $activityRepository->getActivityInfos($joinedActivity->getActivity());
+            $futureActivities[] = $activityInfos;
+        }
 
         return $this->json([
-            'message' => 'test'
+            'message' => 'Données récupérées',
+            'success' => true,
+            'futureActivities' => $futureActivities
         ]);
     }
 }
