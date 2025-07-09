@@ -155,7 +155,7 @@ function ActivityPage() {
             </div>
             <div>
                 <span className="title">Description : </span>
-                <p className="value">{description}</p>
+                <p className="value-desc">{description}</p>
             </div>
             {/* BOUTON MESSAGE SI LE USER A REJOINT OU A CREE L ACTIVITE */}
             {

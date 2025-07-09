@@ -89,6 +89,7 @@ function CreateActivity() {
 
     async function sendActivityData(e) {
         e.preventDefault();
+        startFetch();
         try {
             const response = await fetch('/api/activity/create', {
                 method: 'POST',
@@ -129,6 +130,8 @@ function CreateActivity() {
 
         } catch (err) {
             console.error(err);
+        } finally {
+            endFetch();
         }
     }
 

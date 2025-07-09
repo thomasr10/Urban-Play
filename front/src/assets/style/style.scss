@@ -640,10 +640,14 @@ input[type="checkbox"] {
     font-family: var(--urban-light);
 }
 
-.value {
+.value, .value-desc {
     color: var(--blue-main);
     font-size: 1rem;
-    font-family: var(--urban-regular)
+    font-family: var(--urban-regular);
+}
+.value {
+    text-align: right;
+    width: 300px;
 }
 
 .profil {
@@ -712,6 +716,7 @@ input[type="checkbox"] {
         p {
             margin-top: 8px;
         }
+    
     }
 
 .verif-mail {

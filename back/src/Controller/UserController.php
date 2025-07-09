@@ -122,6 +122,7 @@ final class UserController extends AbstractController
         // On boucle sur les entités GroupChat pour récupérer toutes les infos de l'entité Activity (User et Sport) lié à chaque entité GroupChat
         foreach ($groupChat as $joinedActivity) {
             $activityInfos = $activityRepository->getActivityInfos($joinedActivity->getActivity());
+            // check le résultat d'activityInfos
             $futureActivities[] = $activityInfos;
         }
 

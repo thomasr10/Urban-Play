@@ -21,7 +21,7 @@ function Menu() {
                     </Link>
                 </li>
                 <li>
-                    <Link to='#' className='link-container'>
+                    <Link to='/messagerie' className='link-container'>
                         <MessageCircle className='menu-icon'/>
                         <span>Discussions</span>
                     </Link>

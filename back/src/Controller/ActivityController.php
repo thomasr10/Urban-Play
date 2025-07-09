@@ -10,6 +10,8 @@ use App\Repository\ActivityRepository;
 use App\Repository\SportRepository;
 use App\Repository\UserRepository;
 use App\Entity\Activity;
+use App\Entity\GroupChat;
+use App\Entity\UserGroupChat;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -70,9 +72,22 @@ final class ActivityController extends AbstractController
         $activity->setHourTo(new \DateTime($data['to']));
         $activity->setMaxPlayers($data['players']);
         $activity->setCurrentPlayers(1);
-
         $em->persist($activity);
-        $em->flush($activity);
+
+        $groupChat = new GroupChat();
+        $groupChat->setActivity($activity);
+        $groupChat->setIsClosed(0);
+        $groupChat->setCreatedAt(new \DateTimeImmutable());
+        $groupChat->setClosedAt((clone $activity->getActivityDate())->modify('+1 day'));
+        $em->persist($groupChat);
+
+        $userGroupChat = new UserGroupChat();
+        $userGroupChat->setUser($userEntity);
+        $userGroupChat->setGroupChat($groupChat);
+        $userGroupChat->setJoinedAt(new \DateTimeImmutable);
+        $em->persist($userGroupChat);
+
+        $em->flush();
 
         return $this->json([
             'message' => 'Activité créée avec succès !',
