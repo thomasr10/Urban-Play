@@ -85,12 +85,24 @@ final class ActivityController extends AbstractController
     #[Route('/api/activity/{id}', name: 'app_activity_id', methods: ['GET'])]
     public function getActivityInfos(Activity $activity): JSONResponse
     {
+
+        $user = $activity->getUser();
+        $sport = $activity->getSport();
+
         return $this->json([
             'success' => true,
             'activity' => [
                 'id' => $activity->getId(),
-                'sport' => $activity->getSport(),
-                'user' => $activity->getUser(),
+                'sport' => [
+                    'name' => $sport->getName()
+                ],
+                'user' => [
+                    'id' => $user->getId(),
+                    'email' => $user->getEmail(),
+                    'first_name' => $user->getFirstName(),
+                    'is_banned' => $user->isBanned(),
+                    'gender' => $user->getGender()
+                ],
                 'name' => $activity->getName(),
                 'location_name' => $activity->getLocationName(),
                 'location_latitude' => $activity->getLocationLatitude(),

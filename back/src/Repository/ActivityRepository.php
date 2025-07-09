@@ -86,5 +86,14 @@ class ActivityRepository extends ServiceEntityRepository
         ;
    }
 
+   public function findOneById(int $id): ?Activity
+   {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+   }
 
 }

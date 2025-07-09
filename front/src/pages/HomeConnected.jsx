@@ -5,6 +5,7 @@ import { getUserInfos } from "../api/userInfo";
 import ActivityModal from "../components/ActivityModal";
 import UserFutureActivities from '../components/UserFutureActivity';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 function HomeConnected() {
     const [lat, setLat] = useState(null);
@@ -17,6 +18,17 @@ function HomeConnected() {
     const [userId, setUserId] = useState(null);
     const [futureActivities, setFutureActivities] = useState([]);
     const navigate = useNavigate();
+    const [loadingCount, setLoadingCount] = useState(0);
+
+    function startFetch() {
+        setLoadingCount(prev => prev + 1);
+    }
+
+    function endFetch() {
+        setTimeout(() => {
+            setLoadingCount(prev => prev - 1);
+        }, 600);
+    }
 
     const openModal = ({ coords, name, adress }) => {
         setSelectedMarker({ coords, name, adress });
@@ -32,13 +44,15 @@ function HomeConnected() {
 
     // Récupérer les infos du user (périmètre pour établir la recherche)
     useEffect(() => {
+        startFetch();
         getUserInfos().then((data) => {
-            console.log(data)
             setPerimeter(data.perimeter);
             setUserId(data.id);
-        }).catch((err) => {
-            console.error(err);
-        });
+        })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(endFetch);
     }, []);
 
     // Récupérer les lieux sportifs via l'api du gvt
@@ -69,14 +83,17 @@ function HomeConnected() {
 
     // Récupérer la loc du user
     useEffect(() => {
+        startFetch();
         const watchId = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
                 setLat(latitude);
                 setLong(longitude);
+                endFetch();
             },
             (error) => {
                 console.error("Erreur géolocalisation :", error);
+                endFetch();
             },
             {
                 enableHighAccuracy: true,
@@ -91,10 +108,10 @@ function HomeConnected() {
     useEffect(() => {
         // s'assurer que la fonction ne se lance pas avant que les données soient récup
         if (lat !== null && long !== null && perimeter !== null) {
+            startFetch();
             getSportsLocation()
                 .then((data) => {
                     if (Object.keys(data.data).length > 0) {
-                        console.log(data.data)
                         const arrayCoordinates = [];
                         // on met les coordonnées dans un tableau que l'on passera au composant Map
                         data.data.records.forEach(location => {
@@ -106,7 +123,9 @@ function HomeConnected() {
                     } else {
                         console.error(data.message);
                     }
-                });
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
         }
     }, [lat, long, perimeter]);
 
@@ -139,55 +158,63 @@ function HomeConnected() {
 
     useEffect(() => {
         if (userId) {
+            startFetch();
             getUserFutureActivities().then((data) => {
                 if (data.success === true) {
-                    console.log(data.futureActivities)
                     setFutureActivities(data.futureActivities);
                 }
-            });
+            })
+            .catch(err => console.error(err))
+            .finally(endFetch);
         }
     }, [userId])
 
     return (
         <>
-            <section className="raw-limit-size center home-connected">
-                <section className="search-activities">
-                    <div className="search-container">
-                        <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité" />
-                        <Search className="search-input" />
-                    </div>
-
-                    {lat !== null && long !== null ? (
-                        <div>
-                            <Map lat={lat} long={long} markers={markers} onMarkerClick={openModal} />
-                            <p className='map-result'>Afficher les {countResult} résultats</p>
+            {
+                loadingCount > 0 ? <Loader /> :
+                <section className="raw-limit-size center home-connected">
+                    <section className="search-activities">
+                        <div className="search-container">
+                            <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité" />
+                            <Search className="search-input" />
                         </div>
-                    ) : (
-                        <div className="loading-msg-container">
-                            <p className="loading-message">Chargement de votre position...</p>
+    
+                        {lat !== null && long !== null ? (
+                            <div>
+                                <Map lat={lat} long={long} markers={markers} onMarkerClick={openModal} />
+                                {
+                                    countResult == 0 ? <p className='map-result'>Aucun résultat à proximité</p> :
+                                    countResult == 1 ? <p className='map-result'>Afficher le résultat</p> :
+                                    <p className='map-result'>Afficher les {countResult} résultats</p>
+                                }
+                            </div>
+                        ) : (
+                            <div className="loading-msg-container">
+                                <p className="loading-message">Chargement de votre position...</p>
+                            </div>
+                        )}
+    
+                    </section>
+                    <section className="home-activities">
+                        <h2>Mes prochaines activités</h2>
+                        <div className='future-activities-container'>
+                            {
+                                futureActivities.length > 0 ? (
+    
+                                    futureActivities.map((activity) => (
+                                        <UserFutureActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
+                                    ))
+    
+                                ) :
+                                    <p className='no-activity-msg'>Aucune activité prévue prochainement</p>
+                            }
                         </div>
-                    )}
-
+                    </section>
                 </section>
-                <section className="home-activities">
-                    <h2>Mes prochaines activités</h2>
-                    <div className='future-activities-container'>
-                        {
-                            futureActivities.length > 0 ? (
-                                
-                                futureActivities.map((activity) => (
-                                    <UserFutureActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
-                                ))
-
-                            ) : 
-                                <p className='no-activity-msg'>Aucune activité prévue prochainement</p>
-                        }
-                    </div>
-                </section>
-            </section>
-
+            }
             {/* MODAL */}
-
+    
             {
                 selectedMarker && (
                     <ActivityModal coordinates={selectedMarker.coords} name={selectedMarker.name} adress={selectedMarker.adress} onClose={closeModal} />

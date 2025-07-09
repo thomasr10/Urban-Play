@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\GroupChat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Activity;
 
 /**
  * @extends ServiceEntityRepository<GroupChat>
@@ -30,6 +31,16 @@ class GroupChatRepository extends ServiceEntityRepository
            ->getQuery()
            ->getResult()
        ;
+   }
+
+   public function getGroupChatByActivityEntity(Activity $activity): ?GroupChat
+   {
+        return $this->createQueryBuilder('gc')
+            ->andWhere('gc.activity = :activity')
+            ->setParameter('activity', $activity)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
    }
 
 //    public function findOneBySomeField($value): ?GroupChat

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { getUserInfos } from "../api/userInfo";
 import MessageModal from "../components/MessageModal";
+import Loader from "../components/Loader";
 
 function CreateActivity() {
 
@@ -30,15 +31,27 @@ function CreateActivity() {
     const [userId, setUserId] = useState('');
     const [userGender, setUserGender] = useState('');
 
+    // Loader
+    const [loadingCount, setLoadingCount] = useState(0);
+
+    function startFetch() {
+        setLoadingCount(prev => prev + 1);
+    }
+
+    function endFetch() {
+        setLoadingCount(prev => prev - 1);
+    }
 
     useEffect(() => {
+        startFetch();
         getUserInfos().then((data) => {
             setUserId(data.id);
             setUserGender(data.gender)
         })
-            .catch((err) => {
-                console.error(err);
-            })
+        .catch((err) => {
+            console.error(err);
+        })
+        .finally(endFetch);
     }, []);
 
     async function getSports() {
@@ -65,11 +78,13 @@ function CreateActivity() {
     }
 
     useEffect(() => {
+        startFetch();
         getSports().then((data) => {
             console.log(data);
             setArraySport(data.sportsArray);
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
+        .finally(endFetch);
     }, []);
 
     async function sendActivityData(e) {
@@ -120,6 +135,8 @@ function CreateActivity() {
 
     return (
         <>
+        {
+            loadingCount > 0 ? <Loader /> :
         <section className="raw-limit-size center">
             <h1>Créer une activité</h1>
             <form className="form" onSubmit={sendActivityData}>
@@ -169,8 +186,8 @@ function CreateActivity() {
                 </div>
             </form>
         </section>
-
-        // Modal
+        }
+        {/* // Modal */}
         {
             modalVisibility && (
                 <MessageModal {...modalData} />

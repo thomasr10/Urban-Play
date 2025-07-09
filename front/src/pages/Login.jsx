@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function Login() {
 
@@ -10,6 +11,17 @@ function Login() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const { login, isAuthenticated } = useAuth();
+
+    // Loader
+    const [loadingCount, setLoadingCount] = useState(0);
+
+    function startFetch() {
+        setLoadingCount(prev => prev + 1);
+    }
+
+    function endFetch() {
+        setLoadingCount(prev => prev - 1);
+    }
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -19,7 +31,7 @@ function Login() {
 
     async function sendLoginData(e) {
         e.preventDefault();
-
+        startFetch();
         try {
             const response = await fetch('/api/login_check', {
                 method: 'POST',
@@ -39,13 +51,17 @@ function Login() {
         } catch (err) {
             console.error(err);
             alert(err.message);
+        } finally {
+            endFetch();
         }
     }
 
     return (
         <>
-            <h1 className="h1-form">Connexion</h1>
-            <section className="raw-limit-size center">
+            {
+                loadingCount > 0 ? <Loader /> :
+                <section className="raw-limit-size center">
+                <h1 className="h1-form">Connexion</h1>
                 <form className="form" onSubmit={sendLoginData}>
                     <div>
                         <label htmlFor="email">Adresse mail</label>
@@ -61,6 +77,7 @@ function Login() {
                 </form>
                 <Link to='/register' className="account-link">Je n'ai pas de compte</Link>
             </section>
+            }
         </>
     )
 }

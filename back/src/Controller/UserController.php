@@ -131,4 +131,30 @@ final class UserController extends AbstractController
             'futureActivities' => $futureActivities
         ]);
     }
+
+    #[Route('/api/user/activity', name: 'app_user_activity', methods: ['POST'])]
+    public function isUserInActivity(Request $request, UserRepository $userRepository, ActivityRepository $activityRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $activityId = intval($data['id']);
+        $userId = intval($data['userId']);
+
+        $userEntity = $userRepository->findOneById($userId);
+        $activityEntity = $activityRepository->findOneById($activityId);
+
+        $groupChatEntity = $groupChatRepository->getGroupChatByActivityEntity($activityEntity);
+        $userGroupChatEntity = $userGroupChatRepository->getUserGroupChatByUserAndGCEntity($groupChatEntity, $userEntity);
+
+        if (!$userGroupChatEntity) {
+            return $this->json([
+                'success' => true,
+                'isInActivity' => false
+            ]);
+        }
+
+        return $this->json([
+            'success' => true,
+            'isInActivity' => true
+        ]);
+    }
 }

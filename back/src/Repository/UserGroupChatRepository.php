@@ -6,6 +6,7 @@ use App\Entity\UserGroupChat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use App\Entity\GroupChat;
 
 /**
  * @extends ServiceEntityRepository<UserGroupChat>
@@ -31,6 +32,18 @@ class UserGroupChatRepository extends ServiceEntityRepository
            ->getQuery()
            ->getResult()
        ;
+   }
+
+   public function getUserGroupChatByUserAndGCEntity(GroupChat $gc, User $user): ?UserGroupChat
+   {
+        return $this->createQueryBuilder('ugc')
+            ->andWhere('ugc.groupchat = :gc')
+            ->andWhere('ugc.user = :user')
+            ->setParameter('gc', $gc)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
    }
 
 //    public function findOneBySomeField($value): ?UserGroupChat
