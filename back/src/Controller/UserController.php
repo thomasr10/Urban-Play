@@ -122,10 +122,12 @@ final class UserController extends AbstractController
         // On boucle sur les entités GroupChat pour récupérer toutes les infos de l'entité Activity (User et Sport) lié à chaque entité GroupChat
         foreach ($groupChat as $joinedActivity) {
             $activityInfos = $activityRepository->getActivityInfos($joinedActivity->getActivity());
-            // check le résultat d'activityInfos
-            $futureActivities[] = $activityInfos;
+            // si l'id user de l'activité est le meme que l'id user => le user est créateur de l'activité, on le prend pas en compte
+            if ($activityInfos['user']['id'] !== $userEntity->getId()) {
+                $futureActivities[] = $activityInfos;
+            }
         }
-
+        
         return $this->json([
             'message' => 'Données récupérées',
             'success' => true,
@@ -156,6 +158,32 @@ final class UserController extends AbstractController
         return $this->json([
             'success' => true,
             'isInActivity' => true
+        ]);
+    }
+
+    #[Route('/api/user/group-chat', name: 'app_user_group_chat', methods: ['POST'])]
+    public function getUserGroupChat(Request $request, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $userId = $data['userId'];
+        $userEntity = $userRepository->findOneById($userId);
+
+        if (!$userEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Aucun utilisateur trouvé'
+            ]);
+        }
+
+        $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
+
+        var_dump($groupChat);
+        die;
+
+        return $this->json([
+            'success' => true,
+            'groupChat' => $arrayGC
         ]);
     }
 }

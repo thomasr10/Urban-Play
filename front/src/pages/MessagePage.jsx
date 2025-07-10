@@ -25,6 +25,42 @@ function MessagePage() {
         .finally(endFetch);
     }, []);
 
+    async function getUserGroupChat() {
+        try {
+            const response = await fetch('/api/user/group-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ userId })
+            });
+
+            const data  = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        if (userId) {
+            startFetch();
+            getUserGroupChat()
+            .then((data) => {
+                console.log(data);
+            })
+            .catch(err => console.error(err))
+            .finally(endFetch);
+        }
+    }, [userId])
+
     return (
         <>
         {

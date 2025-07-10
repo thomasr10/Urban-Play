@@ -184,7 +184,7 @@ function HomeConnected() {
                             <div>
                                 <Map lat={lat} long={long} markers={markers} onMarkerClick={openModal} />
                                 {
-                                    countResult == 0 ? <p className='map-result'>Aucun résultat à proximité</p> :
+                                    countResult < 1 ? <p className='map-result'>Aucun résultat à proximité</p> :
                                     countResult == 1 ? <p className='map-result'>Afficher le résultat</p> :
                                     <p className='map-result'>Afficher les {countResult} résultats</p>
                                 }
