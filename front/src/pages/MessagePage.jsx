@@ -1,11 +1,15 @@
 import Loader from "../components/Loader";
 import { useEffect, useState } from "react";
 import { getUserInfos } from "../api/userInfo";
+import GroupChat from "../components/GroupChat";
+import { useNavigate } from "react-router-dom";
 
 function MessagePage() {
 
     const [loadingCount, setLoadingCount] = useState(0);
     const [userId, setUserId] = useState(null);
+    const [arrayGroupChat, setArrayGroupChat] = useState([]);
+    const navigate = useNavigate();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -13,6 +17,10 @@ function MessagePage() {
 
     function endFetch() {
         setLoadingCount(prev => prev - 1);
+    }
+
+    function goToMessage(id) {
+        navigate(`/discussion/${id}`);
     }
 
     useEffect(() => {
@@ -55,6 +63,7 @@ function MessagePage() {
             getUserGroupChat()
             .then((data) => {
                 console.log(data);
+                setArrayGroupChat(data.groupChat);
             })
             .catch(err => console.error(err))
             .finally(endFetch);
@@ -66,8 +75,18 @@ function MessagePage() {
         {
             loadingCount > 0 ? <Loader/> :
 
-            <section>
+            <section className="raw-limit-size-center">
                 <h1>Discussions</h1>
+
+                <div className="group-chat-container">
+                    {
+                        arrayGroupChat ?
+                        arrayGroupChat.map((groupChat) => (
+                            <GroupChat key={groupChat.id} onClick={() => goToMessage(groupChat.id)} activityName={groupChat.activity.name} messageSender={(groupChat.last_message) ? `${groupChat.last_message.user.firts_name} : ` : ''} messageContent={(groupChat.last_message) ? groupChat.last_message.content : 'Aucun message'}/>
+                        )) :
+                        'Aucun groupe de discussion pour le moment. Rejoignez une activité pour faire partie d\'un groupe.'
+                    }
+                </div>
             </section>
         }
 

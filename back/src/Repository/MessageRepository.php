@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\GroupChat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,15 @@ class MessageRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function getGCLastMessage(GroupChat $gc): ?Message
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.groupchat = :gc')
+            ->setParameter('gc', $gc)
+            ->orderBy('m.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

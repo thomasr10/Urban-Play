@@ -17,6 +17,7 @@ use App\Repository\ActivityRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserGroupChatRepository;
 use App\Repository\GroupChatRepository;
+use App\Repository\MessageRepository;
 
 final class UserController extends AbstractController
 {
@@ -161,8 +162,9 @@ final class UserController extends AbstractController
         ]);
     }
 
+    // Récupérer les discussions dans lequel est le user
     #[Route('/api/user/group-chat', name: 'app_user_group_chat', methods: ['POST'])]
-    public function getUserGroupChat(Request $request, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    public function getUserGroupChat(Request $request, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository, MessageRepository $messageRepository): JSONResponse
     {
         $data = json_decode($request->getContent(), true);
         $userId = $data['userId'];
@@ -177,9 +179,51 @@ final class UserController extends AbstractController
 
         $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
         $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
+        
+        $arrayGC = [];
 
-        var_dump($groupChat);
-        die;
+        foreach ($groupChat as $gcEntity) {
+            $activityEntity = $gcEntity->getActivity();
+            $lastMessage = $messageRepository->getGCLastMessage($gcEntity);
+
+            if ($lastMessage) {
+
+                $messageSender = $lastMessage->getUser();
+    
+                $arrayGC[] = [
+                    'id' => $gcEntity->getId(),
+                    'activity' => [
+                        'id' => $activityEntity->getId(),
+                        'name' => $activityEntity->getName()
+                    ],
+                    'is_closed' => $gcEntity->isClosed(),
+                    'created_at' => $gcEntity->getCreatedAt(),
+                    'closed_at' => $gcEntity->getClosedAt(),
+                    'last_message' => [
+                        'id' => $lastMessage->getId(),
+                        'user' => [
+                            'id' => $messageSender->getId(),
+                            'first_name' => $messageSender->getFirstName()
+                        ],
+                        'content' => $lastMessage->getContent(),
+                        'sent_at' => $lastMessage->getSentAt(),
+                        'is_deleted' => $lastMessage->isDeleted()
+                    ]
+                ];
+            } else {
+                $arrayGC[] = [
+                    'id' => $gcEntity->getId(),
+                    'activity' => [
+                        'id' => $activityEntity->getId(),
+                        'name' => $activityEntity->getName()
+                    ],
+                    'is_closed' => $gcEntity->isClosed(),
+                    'created_at' => $gcEntity->getCreatedAt(),
+                    'closed_at' => $gcEntity->getClosedAt(),
+                ];                
+            }
+
+        }
 
         return $this->json([
             'success' => true,

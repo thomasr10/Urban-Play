@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import { AuthProvider } from './context/AuthContext';
@@ -13,8 +13,13 @@ import NewToken from './pages/NewToken';
 import CreateActivity from './pages/CreateActivity';
 import ActivityPage from './pages/ActivityPage';
 import MessagePage from './pages/MessagePage';
+import GroupChatPage from './pages/GroupChatPage';
 
 function App() {
+
+  const location = useLocation();
+
+  const isGroupChatPage = location.pathname.startsWith('/discussion/')
 
   return (
     <AuthProvider>
@@ -31,8 +36,9 @@ function App() {
         <Route path='/modifier-profil' element={<ModifyProfil />} />
         <Route path='/activite/creer' element={<CreateActivity />} />
         <Route path='/messagerie' element={<MessagePage />} />
+        <Route path='/discussion/:id' element={<GroupChatPage />} />
       </Routes>
-      <Menu/>
+      {!isGroupChatPage && <Menu />}
     </AuthProvider>
   )
 }
