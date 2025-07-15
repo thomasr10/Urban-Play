@@ -82,7 +82,7 @@ function MessagePage() {
                     {
                         arrayGroupChat ?
                         arrayGroupChat.map((groupChat) => (
-                            <GroupChat key={groupChat.id} onClick={() => goToMessage(groupChat.id)} activityName={groupChat.activity.name} messageSender={(groupChat.last_message) ? `${groupChat.last_message.user.firts_name} : ` : ''} messageContent={(groupChat.last_message) ? groupChat.last_message.content : 'Aucun message'}/>
+                            <GroupChat key={groupChat.id} onClick={() => goToMessage(groupChat.id)} activityName={groupChat.activity.name} messageSender={(groupChat.last_message) ? (groupChat.last_message.user.id === userId) ? 'Moi : ' : `${groupChat.last_message.user.first_name} : ` : ''} messageContent={(groupChat.last_message) ? groupChat.last_message.content : 'Aucun message'}/>
                         )) :
                         'Aucun groupe de discussion pour le moment. Rejoignez une activité pour faire partie d\'un groupe.'
                     }

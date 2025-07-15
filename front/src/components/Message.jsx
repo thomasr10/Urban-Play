@@ -1,9 +1,16 @@
-function Message ({ content, senderId, senderName, userId}) {
+function Message ({ content, senderId, senderName, userId, sentAt}) {
+
+    const isMe = userId === senderId;
 
     return (
-        <div className={userId === senderId ? 'my-message' : 'others-message'}>
-            <span>{ senderName }</span>
-            <p>{ content }</p>
+        <div className={isMe ? 'my-message' : 'others-message'}>
+            <div className="bubble">
+                <p>{ content }</p>
+            </div>
+            <div className="infos">
+                { !isMe && <span>{ senderName } - </span>}
+                <span>{ sentAt }</span>
+            </div>
         </div>
     )
 }

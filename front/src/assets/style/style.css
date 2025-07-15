@@ -921,12 +921,17 @@ input[type=checkbox]:checked {
 }
 
 .group-chat-page .group-chat-header {
-  height: 70px;
+  height: 80px;
   display: flex;
   align-items: center;
   gap: 16px;
   color: var(--blue-main);
   border-bottom: solid 1px var(--light-blue);
+  position: fixed;
+  width: 100%;
+  background-color: var(--grey-white);
+  max-width: 360px;
+  top: 0;
 }
 .group-chat-page .group-chat-header .content {
   width: 100%;
@@ -957,6 +962,7 @@ input[type=checkbox]:checked {
   max-height: -moz-fit-content;
   max-height: fit-content;
   padding-bottom: 1rem;
+  background-color: var(--grey-white);
 }
 .group-chat-page .send-msg-container .input-container {
   display: flex;
@@ -993,15 +999,39 @@ input[type=checkbox]:checked {
 .msg-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 8px;
+  overflow-y: scroll;
+  margin-top: 88px;
+  flex-grow: 1;
 }
-.msg-container .my-message {
-  background-color: var(--orange-main);
+.msg-container .bubble {
   color: var(--blue-main);
   font-size: 1rem;
   font-family: var(--urban-regular);
   padding: 0.5rem;
-  width: 80%;
   border-radius: 12px;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.msg-container .infos {
+  color: var(--blue-main);
+  font-size: 0.8rem;
+  font-family: var(--urban-light);
+  margin-top: 4px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.msg-container .my-message {
+  align-self: flex-end;
+  max-width: 70%;
+}
+.msg-container .my-message .bubble {
+  background-color: var(--orange-main);
+}
+.msg-container .others-message {
+  align-self: flex-start;
+  max-width: 70%;
+}
+.msg-container .others-message .bubble {
+  background-color: #FFF;
 }/*# sourceMappingURL=style.css.map */

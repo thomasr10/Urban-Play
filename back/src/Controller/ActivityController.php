@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ActivityRepository;
 use App\Repository\SportRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserGroupChatRepository;
+use App\Repository\GroupChatRepository;
 use App\Entity\Activity;
 use App\Entity\GroupChat;
 use App\Entity\UserGroupChat;
@@ -132,5 +134,36 @@ final class ActivityController extends AbstractController
                 'max_players' => $activity->getMaxPlayers()
             ]
         ]);
+    }
+
+    #[Route('/api/activity/infos', name: 'app_activity_infos')]
+    public function getActivityInfosFromGC (Request $req, GroupChatRepository $groupChatRepository, UserGroupChatRepository $userGroupChatRepository): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $groupChatId = $data['id'];
+        $groupChat = $groupChatRepository->findOneById($groupChatId);
+
+        $activity = $groupChat->getActivity();
+        $userGroupChat = $userGroupChatRepository->getUsersInActivity($groupChat);
+
+        $usersInActivity = [];
+        foreach($userGroupChat as $ugc) {
+
+            $user = $ugc->getUser();
+            $usersInActivity[] = [
+                'id' => $user->getId(),
+                'first_name' => $user->getFirstName(),
+            ];
+        }
+
+        return $this->json([
+            'success' => true,
+            'users' => $usersInActivity,
+            'activityInfos' => [
+                'id' => $activity->getId(),
+                'name' => $activity->getName()
+            ]
+        ]);
+
     }
 }

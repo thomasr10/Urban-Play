@@ -52,4 +52,16 @@ class MessageRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function getLastTenMessages(GroupChat $gc): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.groupchat = :gc')
+            ->setParameter('gc', $gc)
+            ->orderBy('m.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }   
 }

@@ -25,7 +25,7 @@ class GroupChatRepository extends ServiceEntityRepository
        return $this->createQueryBuilder('gc')
            ->select('gc', 'activity')
            ->join('gc.activity', 'activity')
-           ->andWhere('gc IN (:arrayUserGC)')
+           ->andWhere('gc.id IN (:arrayUserGC)')
            ->setParameter('arrayUserGC', $userGC)
            ->orderBy('gc.id', 'DESC')
            ->getQuery()
@@ -43,13 +43,14 @@ class GroupChatRepository extends ServiceEntityRepository
         ;
    }
 
-//    public function findOneBySomeField($value): ?GroupChat
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+   public function findOneById($id): ?GroupChat
+   {
+       return $this->createQueryBuilder('g')
+           ->andWhere('g.id = :id')
+           ->setParameter('id', $id)
+           ->getQuery()
+           ->getOneOrNullResult()
+       ;
+   }
+   
 }

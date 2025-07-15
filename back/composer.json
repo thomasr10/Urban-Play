@@ -21,7 +21,8 @@
         "symfony/mailer": "7.2.*",
         "symfony/runtime": "7.2.*",
         "symfony/security-bundle": "7.2.*",
-        "symfony/yaml": "7.2.*"
+        "symfony/yaml": "7.2.*",
+        "textalk/websocket": "^1.6"
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.63"

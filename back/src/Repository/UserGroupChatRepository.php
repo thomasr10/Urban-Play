@@ -46,6 +46,18 @@ class UserGroupChatRepository extends ServiceEntityRepository
         ;
    }
 
+   public function getUsersInActivity(GroupChat $gc): array
+   {
+        return $this->createQueryBuilder('ugc')
+            ->select('user', 'ugc')
+            ->join('ugc.user', 'user')
+            ->andWhere('ugc.groupchat = :gc')
+            ->setParameter('gc', $gc)
+            ->getQuery()
+            ->getResult()
+        ;
+   }
+
 //    public function findOneBySomeField($value): ?UserGroupChat
 //    {
 //        return $this->createQueryBuilder('u')

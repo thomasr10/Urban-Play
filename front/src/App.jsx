@@ -23,7 +23,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <Header/>
+      {!isGroupChatPage && <Header />}
       <Routes>
         <Route path="/register" element={<Register/>} />
         <Route path="/new-user/:id" element={<NewUser/>} />

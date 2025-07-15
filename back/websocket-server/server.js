@@ -8,11 +8,13 @@ server.on('connection', (ws) => {
         const data = JSON.parse(message);
         console.log('Message reçu :', data);
 
-        server.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message); 
-            }
-        });
+        if (data.type === 'message') {
+            server.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(data));
+                }
+            });
+        }
     });
 
     ws.on('close', () => {

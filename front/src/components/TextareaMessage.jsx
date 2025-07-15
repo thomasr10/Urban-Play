@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 
-function TextareaMessage ({ onSend, handleKeyDown }) {
+function TextareaMessage ({ onSend }) {
 
     const textareaRef = useRef(null);
     const [value, setValue] = useState('');
@@ -19,6 +19,18 @@ function TextareaMessage ({ onSend, handleKeyDown }) {
     function handleClick () {
         onSend(value);
         setValue('');
+    }
+
+    function handleKeyDown (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const trimmedMessage = value.trim();
+
+            if(trimmedMessage !== '') {
+                onSend(trimmedMessage);
+                setValue('');
+            }
+        }
     }
 
     return (

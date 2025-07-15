@@ -1,10 +1,13 @@
+// Page d'une discussion
+
 import { ArrowLeft, BellRing, Users, BellOff, Send } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import TextareaMessage from "../components/TextareaMessage";
 import Loader from "../components/Loader";
 import { getUserInfos } from '../api/userInfo';
 import Message from "../components/Message";
+import { formatTime } from '../assets/js/formatDate'
 
 function GroupChatPage() {
 
@@ -15,6 +18,10 @@ function GroupChatPage() {
     const [messages, setMessages] = useState([]);
     const [userId, setUserId] = useState();
     const [firstName, setFirstName] = useState('');
+    const { id } = useParams(); // groupChatId
+    const [lastMessage, setLastMessage] = useState(null);
+    const [activityName, setActivityName] = useState('');
+    const [usersInActivity, setUsersInActivity] = useState([]);
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -33,12 +40,50 @@ function GroupChatPage() {
         // créer une propriété notifcation dans l'entité UGC et la modif selon le cas
     }
 
+    async function getActivityInfos() {
+        try {
+            const response = await fetch('/api/activity/infos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ id })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        if (id) {
+            startFetch();
+            getActivityInfos()
+                .then((data) => {
+                    console.log(data);
+                    setActivityName(data.activityInfos.name);
+                    setUsersInActivity(data.users);
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
+        }
+    }, [id])
+
     useEffect(() => {
         startFetch();
         getUserInfos()
             .then((data) => {
                 setUserId(data.id);
-                setFirstName(data.firts_name);
+                setFirstName(data.first_name);
             })
             .catch(err => console.error(err))
             .finally(endFetch);
@@ -57,18 +102,17 @@ function GroupChatPage() {
             let text = event.data;
 
             if (event.data instanceof Blob) {
-                text = await event.data.text(); 
+                text = await event.data.text();
             }
 
             try {
                 const data = JSON.parse(text);
-
+                console.log(data)
                 if (data.type === 'message') {
                     setMessages((prev) => [...prev, data]);
                 }
             } catch (err) {
-                console.error('Erreur lors du parsing JSON :', err);
-                console.log('Contenu brut reçu :', text);
+                console.error('Erreur JSON :', err);
             }
         });
 
@@ -80,19 +124,67 @@ function GroupChatPage() {
         }
     }, []);
 
-    function sendMessage(message) {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-            socketRef.current.send(JSON.stringify({
-                type: 'message',
-                content: message,
-                id: userId,
-                name: firstName
-            }));
-        } else {
-            console.error('Socket non prêt');
+    async function getMessages() {
+        try {
+            const response = await fetch('/api/message/get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ id, lastMessage })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Erreur http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
         }
     }
 
+    useEffect(() => {
+        startFetch();
+        getMessages()
+            .then((data) => {
+
+                setLastMessage(data.lastMessages[0].id);
+                data.lastMessages.forEach(message => {
+                    setMessages((prev) => [...prev, message]);
+                });
+            })
+            .catch(err => console.error(err))
+            .finally(endFetch);
+    }, [id])
+
+    async function sendMessage(message) {
+        try {
+            const response = await fetch('/api/message/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ message, id, userId })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            }
+
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <>
@@ -110,8 +202,21 @@ function GroupChatPage() {
                                 </div>
                             </div>
                             <div className="content">
-                                <span className="activity-name">{'activityName'}</span>
-                                <span className="activity-users">Tata, toto, titi, tutu</span>
+                                <span className="activity-name">{activityName}</span>
+                                <div>
+                                    {
+                                        usersInActivity && (
+                                            usersInActivity.map((user, index) => (
+                                                <span key={index} className="activity-users">
+                                                    {
+                                                        (index === 5) ? '...' : (index < usersInActivity.length - 1) ? (userId == user.id) ? 'Moi, ' : `${user.first_name}, ` : (userId == user.id) ? 'Moi' : user.first_name
+                                                    }
+                                                </span>
+                                            ))
+                                        )
+                                    }
+
+                                </div>
                             </div>
                             <div className="icon-container">
                                 {
@@ -123,8 +228,8 @@ function GroupChatPage() {
                         <div className="msg-container">
                             {
                                 messages && (
-                                    messages.map((message, index) => (
-                                        <Message key={index} senderId={message.id} userId={userId} senderName={message.name} content={message.content} />
+                                    messages.map((message) => (
+                                        <Message key={message.id} senderId={message.senderId} userId={userId} senderName={message.senderName} content={message.content} sentAt={formatTime(message.sentAt)} />
                                     ))
                                 )
                             }

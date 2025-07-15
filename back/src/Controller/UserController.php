@@ -111,11 +111,14 @@ final class UserController extends AbstractController
         }
         // On récupère l'entité user à partir de l'id
         $userEntity = $userRepository->findOneById($userId);
-
         // On récupère les entités UserGroupChat auquel le user est lié
         $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+
+        // On isole les id pour les envoyer à la requete
+        $arrayId = array_map(fn($ugc) => $ugc->getGroupChat(), $userGroupChat);
+
         // On récupère les entités GroupChat pour avoir les entités Activity auquel le user est lié mais qu'il n'a pas créé
-        $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($arrayId); 
 
         // On récupère les activités que le user a créées
         $futureActivities = $activityRepository->getUserFutureActivities($userEntity);
@@ -178,8 +181,8 @@ final class UserController extends AbstractController
         }
 
         $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
-        $groupChat = $groupChatRepository->getGroupChatByUserGC($userGroupChat);
-        
+        $arrayId = array_map(fn($ugc) => $ugc->getGroupChat(), $userGroupChat);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($arrayId);
         $arrayGC = [];
 
         foreach ($groupChat as $gcEntity) {
