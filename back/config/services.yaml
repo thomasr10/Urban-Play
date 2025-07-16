@@ -22,3 +22,12 @@ services:
     App\EventListener\JWTCreatedListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+            
+    Gesdinet\JWTRefreshTokenBundle\EventListener\AttachRefreshTokenOnSuccessListener:
+        arguments:
+            $ttl: 2592000
+            $tokenParameterName: refresh_token
+            $singleUse: false
+            $cookieSettings: []
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: attachRefreshToken }

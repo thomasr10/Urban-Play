@@ -158,6 +158,7 @@ input {
   --urban-bold: "Urbanist-Bold";
   --montserrat-regular: "Montserrat-Regular";
   --montserrat-semiBold: "Montserrat-SemiBold";
+  --output-position: 0px;
 }
 
 body {
@@ -179,6 +180,10 @@ section h1 {
 
 .center {
   margin: 0 auto 100px auto;
+}
+
+.center-unco {
+  margin: 0 auto;
 }
 
 #map {
@@ -248,7 +253,6 @@ section h1 {
   background-color: var(--orange-main);
   position: relative;
   padding: 0 1rem;
-  margin-top: 24px;
 }
 .footer span {
   color: var(--blue-main);
@@ -605,13 +609,44 @@ input[type=checkbox]:checked {
   font-size: 1.5rem;
   text-align: center;
 }
-.profil .profil-top figure {
+.profil .profil-top .pp-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+.profil .profil-top .pp-container .background {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: var(--orange-main);
+  color: var(--blue-main);
+  border-radius: 50%;
+  height: 84px;
+  width: 84px;
+}
+.profil .profil-top .pp-container .background .icon {
+  height: 48px;
+  width: 48px;
 }
 
+.profil-content .picture-container,
+.activity-page .picture-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profil-content .picture-container figure,
+.activity-page .picture-container figure {
+  width: 100%;
+  max-width: 220px;
+}
+.profil-content .picture-container figure img,
+.activity-page .picture-container figure img {
+  display: block;
+  width: 100%;
+}
 .profil-content div,
 .activity-page div {
   margin-top: 16px;
@@ -632,11 +667,40 @@ input[type=checkbox]:checked {
   font-family: var(--urban-medium);
   color: var(--blue-main);
   max-width: 280px;
+  text-decoration: underline;
 }
-.profil-content input[type=range],
-.activity-page input[type=range] {
+.profil-content .perimeter-container,
+.activity-page .perimeter-container {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4px;
+}
+.profil-content .perimeter-container .range-container,
+.activity-page .perimeter-container .range-container {
   width: 100%;
   max-width: 280px;
+  position: relative;
+}
+.profil-content .perimeter-container .range-container output,
+.activity-page .perimeter-container .range-container output {
+  color: var(--blue-main);
+  font-family: var(--urban-light);
+  font-size: 0.9rem;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  position: absolute;
+  top: -24px;
+  left: var(--output-position);
+}
+.profil-content .perimeter-container input[type=range],
+.activity-page .perimeter-container input[type=range] {
+  width: 100%;
 }
 .profil-content textarea,
 .activity-page textarea {
@@ -650,6 +714,11 @@ input[type=checkbox]:checked {
 .profil-content p,
 .activity-page p {
   margin-top: 8px;
+}
+.profil-content .bio-value,
+.activity-page .bio-value {
+  color: var(--blue-main);
+  font-family: var(--urban-regular);
 }
 
 .verif-mail {

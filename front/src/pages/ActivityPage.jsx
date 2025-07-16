@@ -22,6 +22,7 @@ function ActivityPage() {
     const [activityDate, setActivityDate] = useState('');
     const [isInActivity, setIsInActivity] = useState(false);
     const [loadingCount, setLoadingCount] = useState(0);
+    const [picturePath, setPicturePath] = useState('');
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -69,6 +70,7 @@ function ActivityPage() {
             startFetch();
 
             getActivityInfos(id).then((data) => {
+                console.log(data)
                 setCreatorName(data.activity.user.first_name);
                 setActivityLocation(capitalizeText(data.activity.location_name));
                 setHourFrom(formatTime(data.activity.hour_from.date));
@@ -80,6 +82,7 @@ function ActivityPage() {
                 setDescription(data.activity.description);
                 setCreatorId(data.activity.user.id);
                 setActivityDate(formatDate(data.activity.activity_date.date));
+                setPicturePath(data.activity.picture_path)
             })
             .catch(err => console.error(err))
             .finally(endFetch);
@@ -137,6 +140,11 @@ function ActivityPage() {
                 (creatorId === userId) ?
                     <h1>Mon activité</h1> : <h1>Activité de {creatorName}</h1>
             }
+            <div className='picture-container'>
+                <figure>
+                    <img src={picturePath} alt="Image d'un city stade" />
+                </figure>
+            </div>
             <div className="flex-between">
                 <span className="title">Lieu :</span>
                 <span className="value">{activityLocation}</span>

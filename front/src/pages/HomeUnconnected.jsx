@@ -13,7 +13,7 @@ function HomeUnconnected() {
                     <p className="home-unco-hero-title">Bienvenue sur Urban Play</p>
                 </figure>                
             </section>
-            <section className="home-unco-content raw-limit-size center">
+            <section className="home-unco-content raw-limit-size center-unco">
                 <h1>Le sport commence dans ta rue</h1>
                 <h2>Rejoins des parties près de chez toi ou crée la tienne</h2>
                 <p>Urban play est la plateforme qui connecte les passionné.es de sport en ville. Découvre les terrains accessibles autour de toi (city-stades, paniers de quartier, espaces en libre accès...) et rejoins des parties de foot ou de basket en quelques clics.</p>
@@ -22,7 +22,7 @@ function HomeUnconnected() {
                 <p>Plus besoin d’attendre que ça s’organise : Urban Play fait du sport un réflexe local et spontané.</p>
             </section>
             <div className="btn-container">
-                {/* <Button to={'/register'}>S'inscrire</Button> */}
+                <Button to={'/register'}>S'inscrire</Button>
             </div>
         </section>
         <footer className="footer">

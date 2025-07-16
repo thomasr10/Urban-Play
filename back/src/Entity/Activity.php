@@ -72,6 +72,9 @@ class Activity
     #[ORM\Column]
     private ?int $current_players = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $picture_path = null;
+
     public function __construct()
     {
         $this->reportedActivities = new ArrayCollection();
@@ -307,6 +310,18 @@ class Activity
     public function setCurrentPlayers(int $current_players): static
     {
         $this->current_players = $current_players;
+
+        return $this;
+    }
+
+    public function getPicturePath(): ?string
+    {
+        return $this->picture_path;
+    }
+
+    public function setPicturePath(string $picture_path): static
+    {
+        $this->picture_path = $picture_path;
 
         return $this;
     }

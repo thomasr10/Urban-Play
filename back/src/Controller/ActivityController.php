@@ -74,6 +74,8 @@ final class ActivityController extends AbstractController
         $activity->setHourTo(new \DateTime($data['to']));
         $activity->setMaxPlayers($data['players']);
         $activity->setCurrentPlayers(1);
+        $activity->setPicturePath('/img/img-city.webp');
+        
         $em->persist($activity);
 
         $groupChat = new GroupChat();
@@ -131,7 +133,8 @@ final class ActivityController extends AbstractController
                 'hour_from' => $activity->getHourFrom(),
                 'hour_to' => $activity->getHourTo(),
                 'current_players' => $activity->getCurrentPlayers(),
-                'max_players' => $activity->getMaxPlayers()
+                'max_players' => $activity->getMaxPlayers(),
+                'picture_path' => $activity->getPicturePath()
             ]
         ]);
     }

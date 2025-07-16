@@ -18,6 +18,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserGroupChatRepository;
 use App\Repository\GroupChatRepository;
 use App\Repository\MessageRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 final class UserController extends AbstractController
 {
@@ -231,6 +232,67 @@ final class UserController extends AbstractController
         return $this->json([
             'success' => true,
             'groupChat' => $arrayGC
+        ]);
+    }
+
+
+    #[Route('/api/user/activity/count', name: 'app_user_count_activities', methods: ['POST'])]
+    public function countUserActivities(Request $req, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $userId = $data['userId'];
+        $userEntity = $userRepository->findOneById($userId);
+
+        if (!$userEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Aucun utilisateur trouvé'
+            ]);
+        }
+
+        $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+        $arrayId = array_map(fn($ugc) => $ugc->getGroupChat(), $userGroupChat);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($arrayId);
+
+        $countActivities = count($groupChat);
+        
+        return $this->json([
+            'success' => true,
+            'message' => 'Données récupérées',
+            'count_activities' => $countActivities,
+            'activities' => $groupChat
+        ]);
+    }
+
+    #[Route('/api/user/modify', name: 'app_user_modify', methods: ['POST'])]
+    public function modifyUser(Request $req, UserRepository $userRepository, EntityManagerInterface $em): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $bio = $data['bio'];
+        $isPublic = $data['isPublic'];
+        $activityNotif = $data['isActivityNotification'];
+        $perimeter = intval($data['perimeter']);
+        $userId = $data['userId'];
+        $userEntity = $userRepository->findOneById($userId);
+
+        if (!$userEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Aucun utilisateur trouvé'
+            ]);
+        }
+
+        $userEntity->setDescription($bio);
+        $userEntity->setIsPublic($isPublic);
+        $userEntity->setActivityNotification($activityNotif);
+        $userEntity->setPerimeter($perimeter);
+        
+        $em->persist($userEntity);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Données mises à jour'
         ]);
     }
 }
