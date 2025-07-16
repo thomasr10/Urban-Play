@@ -32,6 +32,9 @@ security:
         new_user_mail:
             pattern: ^/api/mail/new-user
             security: false
+        refresh_token:
+            pattern: ^/api/token/refresh
+            security: false
 
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

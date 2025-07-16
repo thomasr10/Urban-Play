@@ -4,3 +4,5 @@ gesdinet_jwt_refresh_token:
     firewall: api
     user_provider: app_user_provider
     ttl_update: true
+    token_parameter_name: refresh_token
+    single_use: false
