@@ -14,6 +14,7 @@ import CreateActivity from './pages/CreateActivity';
 import ActivityPage from './pages/ActivityPage';
 import MessagePage from './pages/MessagePage';
 import GroupChatPage from './pages/GroupChatPage';
+import UserActivity from './pages/UserActivity';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path='/' element={<Home />} />
         <Route path='/activite/:id' element={<ActivityPage />} />
+        <Route path='/mes-activites' element={<UserActivity />} />
         <Route path='/profil' element={<Profil />} />
         <Route path='/modifier-profil' element={<ModifyProfil />} />
         <Route path='/activite/creer' element={<CreateActivity />} />

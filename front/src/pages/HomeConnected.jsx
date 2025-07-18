@@ -3,7 +3,7 @@ import Map from "../components/Map";
 import { act, useEffect, useState } from "react";
 import { getUserInfos } from "../api/userInfo";
 import ActivityModal from "../components/ActivityModal";
-import UserFutureActivities from '../components/UserFutureActivity';
+import UserActivities from '../components/UserActivity';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
 
@@ -198,12 +198,12 @@ function HomeConnected() {
                     </section>
                     <section className="home-activities">
                         <h2>Mes prochaines activités</h2>
-                        <div className='future-activities-container'>
+                        <div className='activities-container'>
                             {
                                 futureActivities.length > 0 ? (
     
                                     futureActivities.map((activity) => (
-                                        <UserFutureActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
+                                        <UserActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
                                     ))
     
                                 ) :

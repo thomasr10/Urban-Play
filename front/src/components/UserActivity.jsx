@@ -2,10 +2,18 @@ import { formatDate, formatTime } from "../assets/js/formatDate";
 import { capitalizeText } from "../assets/js/capitalizeText";
 import { useNavigate } from "react-router-dom";
 
-function UserFutureActivities ({ creatorName, creatorId, activityDate, activityDescription, currentPlayers, maxPlayers, location, userId, from, to, onClick }) {
+function UserActivities ({ creatorName, creatorId, activityDate, activityDescription, currentPlayers, maxPlayers, location, userId, from, to, onClick }) {
     
+    function mergedDateAndTime(date, time) {
+        
+        const datePart = date.split(' ')[0];
+        const timePart = time.split(' ')[1];
+        
+        return `${datePart} ${timePart}`;
+    }
+
     return (
-        <div onClick={onClick} className="future-activity">
+        <div onClick={onClick} className={(new Date(mergedDateAndTime(activityDate, from)) > new Date()) ? 'future-activity' : 'past-activity' }>
             <div>
                 <span className="title">{(userId === creatorId) ? 'Mon activité' : `Activité de ${creatorName}`}</span>
                 <span className="date"> - { formatDate(activityDate) }</span>
@@ -21,4 +29,4 @@ function UserFutureActivities ({ creatorName, creatorId, activityDate, activityD
     )
 }
 
-export default UserFutureActivities;
+export default UserActivities;

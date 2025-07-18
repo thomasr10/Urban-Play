@@ -15,7 +15,7 @@ function Menu() {
                     </Link>
                 </li>
                 <li>
-                    <Link to='#' className='link-container'>
+                    <Link to='/mes-activites' className='link-container'>
                         <Volleyball className='menu-icon'/>
                         <span>Activités</span>
                     </Link>

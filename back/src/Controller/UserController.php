@@ -260,7 +260,6 @@ final class UserController extends AbstractController
             'success' => true,
             'message' => 'Données récupérées',
             'count_activities' => $countActivities,
-            'activities' => $groupChat
         ]);
     }
 
@@ -293,6 +292,81 @@ final class UserController extends AbstractController
         return $this->json([
             'success' => true,
             'message' => 'Données mises à jour'
+        ]);
+    }
+
+    #[Route('/api/user/activities', name: 'app_user_activities', methods: ['POST'])]
+    public function getFutureAndPastActivities(Request $req, UserRepository $userRepository, UserGroupChatRepository $userGroupChatRepository, GroupChatRepository $groupChatRepository, ActivityRepository $activityRepository): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $userId = $data['userId'];
+        $userEntity = $userRepository->findOneById($userId);
+
+        if (!$userEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Aucun utilisateur trouvé'
+            ]);
+        }
+
+        $userGroupChat = $userGroupChatRepository->getUserGroupChatByUser($userEntity);
+        $arrayId = array_map(fn($ugc) => $ugc->getGroupChat(), $userGroupChat);
+        $groupChat = $groupChatRepository->getGroupChatByUserGC($arrayId);
+
+        $arrayActivityId = array_map(fn($gc) => $gc->getActivity(), $groupChat);
+        $futureActivities = $activityRepository->getFutureActivitiesFromId($arrayActivityId);
+
+        $arrayFutureActivities = [];
+        $arrayPastActivities = [];
+
+        foreach($futureActivities as $act) {
+            $user = $act->getUser();
+            $arrayFutureActivities[] = [
+                'activityCreator' => [
+                    'name' => $user->getFirstName(),
+                    'id' => $user->getId()
+                ],
+                'activity' => [
+                    'id' => $act->getId(),
+                    'name' => $act->getName(),
+                    'date' => $act->getActivityDate(),
+                    'location_name' => $act->getLocationName(),
+                    'description' => $act->getDescription(),
+                    'hour_from' => $act->getHourFrom(),
+                    'hour_to' => $act->getHourTo(),
+                    'current_players' => $act->getCurrentPlayers(),
+                    'max_players' => $act->getMaxPlayers()
+                ] 
+            ];
+        }
+
+        $pastActivities = $activityRepository->getPastActivitiesFromId($arrayActivityId);
+
+        foreach($pastActivities as $act) {
+            $user = $act->getUser();
+            $arrayPastActivities[] = [
+                'activityCreator' => [
+                    'name' => $user->getFirstName(),
+                    'id' => $user->getId()
+                ],
+                'activity' => [
+                    'id' => $act->getId(),
+                    'name' => $act->getName(),
+                    'date' => $act->getActivityDate(),
+                    'location_name' => $act->getLocationName(),
+                    'description' => $act->getDescription(),
+                    'hour_from' => $act->getHourFrom(),
+                    'hour_to' => $act->getHourTo(),
+                    'current_players' => $act->getCurrentPlayers(),
+                    'max_players' => $act->getMaxPlayers()
+                ] 
+            ];
+        }
+
+        return $this->json([
+            'success' => true,
+            'futureActivities' => $arrayFutureActivities,
+            'pastActivities' => $arrayPastActivities
         ]);
     }
 }

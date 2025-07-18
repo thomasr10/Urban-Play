@@ -68,7 +68,7 @@ function Profil() {
             .catch(err => console.error(err))
             .finally(endFetch);
         }
-    }, [userId])
+    }, [userId]);
 
     return (
         <>

@@ -96,4 +96,30 @@ class ActivityRepository extends ServiceEntityRepository
         ;
    }
 
+   public function getFutureActivitiesFromId(array $arrayActivity): array
+   {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.id in (:arrayActivity)')
+            ->andWhere('a.is_done = 0')
+            ->andWhere("CONCAT(a.activity_date, ' ', a.hour_from)>= CURRENT_TIMESTAMP()")
+            ->setParameter('arrayActivity', $arrayActivity)
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult()
+        ;
+   }
+
+   public function getPastActivitiesFromId(array $arrayActivity): array
+   {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.id in (:arrayActivity)')
+            ->andWhere('a.is_done = 0')
+            ->andWhere("CONCAT(a.activity_date, ' ', a.hour_from) < CURRENT_TIMESTAMP()")
+            ->setParameter('arrayActivity', $arrayActivity)
+            ->orderBy('a.id', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult()
+        ;   }
 }
