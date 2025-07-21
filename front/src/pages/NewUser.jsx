@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { useParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function NewUser() {
 

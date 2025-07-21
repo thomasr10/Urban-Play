@@ -35,6 +35,7 @@ function ActivityModal ({coordinates, name, adress, onClose}) {
 
     useEffect(() => {
         getActivitiesFromLocation().then((data) => {
+            console.log(data);
             setArrayActivities(data.activities);
         })
         .catch(err => console.error(err));

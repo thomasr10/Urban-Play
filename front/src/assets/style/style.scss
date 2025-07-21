@@ -157,7 +157,7 @@ input {
     --light-orange-hover: #ffad6e;
     --light-blue: #3a5068a4;
     --clear-blue: #384b5f98;
-    
+
     --urban-light: 'Urbanist-Light';
     --urban-regular: 'Urbanist-Regular';
     --urban-semiBold: 'Urbanist-SemiBold';
@@ -332,6 +332,7 @@ section {
     background-color: transparent;
     font-family: var(--urban-semiBold);
     color: var(--light-red);
+    cursor: pointer;
 }
 
 .logout-container {
@@ -663,7 +664,7 @@ input[type="checkbox"] {
 
 .value {
     text-align: right;
-    width: 300px;
+    width: 220px;
 }
 
 .profil {
@@ -731,7 +732,7 @@ input[type="checkbox"] {
     }
 
     div {
-        margin-top: 16px;
+        margin-top: 32px;
     }
 
     .flex-col {
@@ -794,6 +795,7 @@ input[type="checkbox"] {
         color: var(--blue-main);
         font-family: var(--urban-regular);
         padding: .5rem;
+        resize: none;
     }
 
     p {
@@ -857,7 +859,7 @@ input[type="checkbox"] {
 .modal-bg {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     top: 0;
     background-color: var(--modal-bg);
     z-index: 999999;
@@ -868,7 +870,7 @@ input[type="checkbox"] {
         max-width: 360px;
         height: auto;
         max-height: 380px;
-        overflow-y: scroll;
+        overflow-y: auto;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -999,7 +1001,8 @@ input[type="checkbox"] {
     flex-direction: column;
     gap: 12px;
 
-    .future-activity, .past-activity {
+    .future-activity,
+    .past-activity {
         width: 100%;
         max-width: 360px;
         height: 100px;
@@ -1068,6 +1071,7 @@ input[type="checkbox"] {
         width: 100%;
         height: 75px;
         border-bottom: solid 1px var(--light-blue);
+        cursor: pointer;
 
         &:nth-child(1) {
             border-top: solid 1px var(--light-blue);
@@ -1130,6 +1134,7 @@ input[type="checkbox"] {
     .group-chat-header {
         height: 80px;
         display: flex;
+        max-width: 360px;
         align-items: center;
         gap: 16px;
         color: var(--blue-main);
@@ -1137,7 +1142,6 @@ input[type="checkbox"] {
         position: fixed;
         width: 100%;
         background-color: var(--grey-white);
-        max-width: 360px;
         top: 0;
 
 
@@ -1157,11 +1161,12 @@ input[type="checkbox"] {
                 font-size: 0.8rem;
             }
 
-            .icon-container {
-                cursor: pointer;
-            }
         }
 
+    }
+
+    .icon-container {
+        cursor: pointer;
     }
 
     .send-msg-container {
@@ -1171,7 +1176,7 @@ input[type="checkbox"] {
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
-        max-width: 380px;
+        max-width: 360px;
         min-height: 60px;
         max-height: fit-content;
         padding-bottom: 1rem;
@@ -1217,7 +1222,7 @@ input[type="checkbox"] {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-top: 88px;
     flex-grow: 1;
 
@@ -1260,8 +1265,230 @@ input[type="checkbox"] {
 
 }
 
-.future-activities, .past-activities {
+.desktop {
+    display: none;
+}
+
+.mobile {
+    display: block;
+}
+
+.future-activities,
+.past-activities {
     h1 {
         text-align: left;
+    }
+}
+
+.none {
+    opacity: 0;
+    transition: all ease-in .2s;
+
+}
+
+.open {
+    transition: all ease-in .2s;
+    opacity: 1;
+}
+
+.burger-menu-container {
+
+    position: fixed;
+    top: 100px;
+    left: 24px;
+
+    .icon-container {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: var(--orange-main);
+        color: var(--blue-main);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color ease-in .25s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--orange-hover);
+        }
+    }
+
+    .list-icon {
+        width: 200px;
+        height: auto;
+        background-color: var(--orange-main);
+        margin-top: 16px;
+        padding: .8rem;
+        border-radius: 12px;
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            .link-container {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+
+                span {
+                    color: var(--blue-main);
+                    font-size: 1rem;
+                    font-family: var(--urban-medium);
+                    transition: color ease-in .25s;
+
+                    &:hover {
+                        color: var(--light-blue);
+                    }
+                }
+
+                .menu-icon {
+                    width: 24px;
+                    height: 24px;
+                    color: var(--blue-main);
+                }
+            }
+        }
+    }
+
+}
+
+@media (min-width: 738px) {
+    .home-unco {
+        .hero {
+            figure {
+                img {
+                    object-fit: cover;
+                    height: 356px;
+                }
+            }
+
+        }
+
+        .home-unco-content {
+            max-width: 620px;
+        }
+    }
+
+    .home-connected {
+        max-width: 720px;
+
+        #map {
+            height: 356px;
+        }
+
+        #search-bar {
+            max-width: 380px;
+        }
+
+        .future-activity {
+            max-width: 720px;
+        }
+    }
+
+    .raw-limit-size {
+        max-width: 720px;
+    }
+
+    .activities-container {
+        max-width: 720px;
+
+        .past-activity {
+            max-width: 720px;
+        }
+
+        .future-activity {
+            max-width: 720px;
+        }
+    }
+
+    .group-chat-page {
+
+        .group-chat-header {
+            max-width: 720px;
+        }
+
+        .send-msg-container {
+            max-width: 720px;
+        }
+    }
+
+    .group-chat-container {
+        max-width: 720px;
+    }
+
+
+
+    .textarea-msg {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 1080px) {
+    .home-unco {
+        .hero {
+            figure {
+                img {
+                    object-fit: cover;
+                    height: 456px;
+                }
+
+                p {
+                    font-size: 3rem;
+                }
+            }
+        }
+    }
+
+    .home-connected {
+        max-width: 920px;
+
+        #map {
+            height: 380px;
+        }
+
+        .future-activity {
+            max-width: 920px;
+        }
+    }
+
+    .desktop {
+        display: block;
+    }
+
+    .mobile {
+        display: none;
+    }
+
+    .activities-container {
+        max-width: 920px;
+
+        .past-activity {
+            max-width: 920px;
+        }
+
+        .future-activity {
+            max-width: 920px;
+        }
+    }
+
+    .group-chat-container {
+        max-width: 920px;
+    }
+
+}
+
+@media (min-width: 1440px) {
+    .home-unco {
+        .hero {
+            figure {
+                img {
+                    object-fit: cover;
+                    height: 556px;
+                }
+            }
+        }
     }
 }

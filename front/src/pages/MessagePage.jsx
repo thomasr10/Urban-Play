@@ -75,7 +75,7 @@ function MessagePage() {
         {
             loadingCount > 0 ? <Loader/> :
 
-            <section className="raw-limit-size-center">
+            <section className="raw-limit-size center">
                 <h1>Discussions</h1>
 
                 <div className="group-chat-container">
