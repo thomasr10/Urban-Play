@@ -348,7 +348,11 @@ section {
     gap: 8px;
     font-size: 0.9rem;
     font-family: var(--montserrat-semiBold);
+    cursor: pointer;
 
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .loader-container {
@@ -877,6 +881,11 @@ input[type="checkbox"] {
         transform: translate(-50%, -50%);
         background-color: var(--grey-white);
         border-radius: 12px;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     .modal-info {
@@ -900,13 +909,13 @@ input[type="checkbox"] {
     }
 
     .modal {
-
         .x-icon {
             position: absolute;
             top: .3rem;
             right: .3rem;
             color: var(--blue-main);
             width: 20px;
+            cursor: pointer;
         }
 
         h1 {
@@ -961,6 +970,12 @@ input[type="checkbox"] {
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
+        transition: all ease-in 0.2s;
+
+        &:hover {
+            border: solid 2px var(--orange-main);
+        }
 
         .title {
             font-family: var(--urban-semiBold);
@@ -1215,7 +1230,11 @@ input[type="checkbox"] {
     padding: 0.3rem;
     resize: none;
     overflow-y: auto;
+    scrollbar-width: none;
 
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .msg-container {
@@ -1355,6 +1374,22 @@ input[type="checkbox"] {
 
 }
 
+.error-page {
+    .btn-container {
+        margin-top: 24px;
+
+        .link {
+            color: var(--orange-main);
+            font-size: 1.2rem;
+            font-family: var(--urban-regular);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 @media (min-width: 738px) {
     .home-unco {
         .hero {
@@ -1419,11 +1454,27 @@ input[type="checkbox"] {
         max-width: 720px;
     }
 
-
-
     .textarea-msg {
         max-width: 720px;
     }
+
+    .modal-bg {
+
+        .modal-info,
+        .modal {
+            max-width: 460px;
+        }
+    }
+
+    .activity-page {
+        .picture-container {
+
+            figure {
+                max-width: 360px;
+            }
+        }
+    }
+
 }
 
 @media (min-width: 1080px) {

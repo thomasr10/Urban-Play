@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { act, useEffect, useState } from "react";
 import { X } from 'lucide-react'
 import ActivityList from "./ActivityList";
 import { capitalizeText } from "../assets/js/capitalizeText";
+import { getUserInfos } from "../api/userInfo";
 
 function ActivityModal ({coordinates, name, adress, onClose}) {
 
     const [arrayActivities, setArrayActivities] = useState([]);
+    const [userId, setUserId] = useState(null);
     
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        getUserInfos()
+        .then((data) => {
+            setUserId(data.id);
+        })
+    }, []);
+
     async function getActivitiesFromLocation() {
         
         try {
@@ -41,7 +52,10 @@ function ActivityModal ({coordinates, name, adress, onClose}) {
         .catch(err => console.error(err));
     }, []);
 
-    console.log(arrayActivities)
+    function goToActivity(id) {
+        navigate(`/activite/${id}`);
+    }
+
     return (
         <div className="modal-bg">
             <div className="modal">
@@ -58,7 +72,7 @@ function ActivityModal ({coordinates, name, adress, onClose}) {
                     {
                         arrayActivities ? (
                             arrayActivities.map((activity) => (
-                                <ActivityList key={activity.id} userName={activity.user.first_name} date={activity.activity_date.date} from={activity.hour_from.date} to={activity.hour_to.date} currentPlayers={activity.current_players} maxPlayers={activity.max_players}/>
+                                <ActivityList key={activity.id} userName={activity.user.first_name} date={activity.activity_date.date} from={activity.hour_from.date} to={activity.hour_to.date} currentPlayers={activity.current_players} maxPlayers={activity.max_players} creatorId={activity.user.id} userId={userId} onClick={() => goToActivity(activity.id)}/>
                             ))
                         ) : 
                         <p className="alert-message">

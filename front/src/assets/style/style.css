@@ -326,6 +326,10 @@ section h1 {
   gap: 8px;
   font-size: 0.9rem;
   font-family: var(--montserrat-semiBold);
+  cursor: pointer;
+}
+.signal-btn:hover {
+  text-decoration: underline;
 }
 
 .loader-container {
@@ -786,6 +790,11 @@ input[type=checkbox]:checked {
   transform: translate(-50%, -50%);
   background-color: var(--grey-white);
   border-radius: 12px;
+  scrollbar-width: none;
+}
+.modal-bg .modal::-webkit-scrollbar,
+.modal-bg .modal-info::-webkit-scrollbar {
+  display: none;
 }
 .modal-bg .modal-info {
   padding: 32px 0;
@@ -810,6 +819,7 @@ input[type=checkbox]:checked {
   right: 0.3rem;
   color: var(--blue-main);
   width: 20px;
+  cursor: pointer;
 }
 .modal-bg .modal h1 {
   color: var(--orange-main);
@@ -857,6 +867,11 @@ input[type=checkbox]:checked {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: all ease-in 0.2s;
+}
+.activity-list-container .activity-list:hover {
+  border: solid 2px var(--orange-main);
 }
 .activity-list-container .activity-list .title {
   font-family: var(--urban-semiBold);
@@ -1081,6 +1096,10 @@ input[type=checkbox]:checked {
   padding: 0.3rem;
   resize: none;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+.textarea-msg::-webkit-scrollbar {
+  display: none;
 }
 
 .msg-container {
@@ -1200,6 +1219,18 @@ input[type=checkbox]:checked {
   color: var(--blue-main);
 }
 
+.error-page .btn-container {
+  margin-top: 24px;
+}
+.error-page .btn-container .link {
+  color: var(--orange-main);
+  font-size: 1.2rem;
+  font-family: var(--urban-regular);
+}
+.error-page .btn-container .link:hover {
+  text-decoration: underline;
+}
+
 @media (min-width: 738px) {
   .home-unco .hero figure img {
     -o-object-fit: cover;
@@ -1244,6 +1275,13 @@ input[type=checkbox]:checked {
   }
   .textarea-msg {
     max-width: 720px;
+  }
+  .modal-bg .modal-info,
+  .modal-bg .modal {
+    max-width: 460px;
+  }
+  .activity-page .picture-container figure {
+    max-width: 360px;
   }
 }
 @media (min-width: 1080px) {

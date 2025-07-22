@@ -100,10 +100,17 @@ final class ActivityController extends AbstractController
         ]);
     }
 
-    // ParamConverter = on idique qu'on attend une entité Activity avec l'id dans l'url doctrine va la chercher automatiquement dans la bdd
     #[Route('/api/activity/{id}', name: 'app_activity_id', methods: ['GET'])]
-    public function getActivityInfos(Activity $activity): JSONResponse
+    public function getActivityInfos(int $id, ActivityRepository $activityRepository): JSONResponse
     {
+        $activity = $activityRepository->findOneById($id);
+        
+        if (!$activity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Activité non trouvée'
+            ]);
+        }
 
         $user = $activity->getUser();
         $sport = $activity->getSport();
@@ -168,5 +175,77 @@ final class ActivityController extends AbstractController
             ]
         ]);
 
+    }
+
+    #[Route('/api/activity/add-user', name: 'app_activity_add_user', methods: ['POST'])]
+    public function addUserToActivity(Request $req, ActivityRepository $activityRepository, UserRepository $userRepository ,GroupChatRepository $groupChatRepository, EntityManagerInterface $em): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $activityId = $data['id'];
+        $userId = $data['userId'];
+
+        $activityEntity = $activityRepository->findOneById($activityId);
+
+        if (!$activityEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Activité non trouvée'
+            ]);
+        }
+
+        $userEntity = $userRepository->findOneById($userId);
+
+        if (!$userEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Utilisateur non trouvé'
+            ]);
+        }
+
+        $groupChat = $groupChatRepository->getGroupChatByActivityEntity($activityEntity);
+
+        if (!$groupChat) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Groupe de discussion non trouvé'
+            ]);
+        }
+
+        $newUserGC = new UserGroupChat();
+        $newUserGC->setUser($userEntity);
+        $newUserGC->setGroupChat($groupChat);
+        $newUserGC->setJoinedAt(new \DateTimeImmutable);
+        $em->persist($newUserGC);
+
+        $activityEntity->setCurrentPlayers($activityEntity->getCurrentPlayers() + 1);
+
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Vous avez rejoint l\'activité'
+        ]);
+    }
+
+    #[Route('/api/activity/groupchat', name: 'app_activity_groupchat', methods: ['POST'])]
+    public function getActivityGroupChat(Request $req, ActivityRepository $activityRepository, GroupChatRepository $groupChatRepository): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $activityId = $data['id'];
+        $activityEntity = $activityRepository->findOneById($activityId);
+
+        if (!$activityEntity) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Activité non trouvée'
+            ]);
+        }
+
+        $groupChat = $groupChatRepository->getGroupChatByActivityEntity($activityEntity);
+
+        return $this->json([
+            'success' => true,
+            'groupChatId' => $groupChat->getId()
+        ]);
     }
 }

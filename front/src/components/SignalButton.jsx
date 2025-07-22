@@ -3,7 +3,7 @@ import { TriangleAlert } from 'lucide-react';
 function SignalButton () {
 
     function test () {
-        alert('signal');
+        alert('Activité signalée');
     }
 
     return (

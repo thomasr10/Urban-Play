@@ -15,6 +15,7 @@ import ActivityPage from './pages/ActivityPage';
 import MessagePage from './pages/MessagePage';
 import GroupChatPage from './pages/GroupChatPage';
 import UserActivity from './pages/UserActivity';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
         <Route path='/activite/creer' element={<CreateActivity />} />
         <Route path='/messagerie' element={<MessagePage />} />
         <Route path='/discussion/:id' element={<GroupChatPage />} />
+        <Route path='*' element={<ErrorPage />} />
       </Routes>
       {!isGroupChatPage && <Menu />}
     </AuthProvider>

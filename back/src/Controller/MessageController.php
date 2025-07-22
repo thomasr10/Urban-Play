@@ -60,6 +60,13 @@ final class MessageController extends AbstractController
         $lastMessageId = $data['lastMessage'];
         $groupChat = $groupChatRepository->findOneById($groupChatId);
 
+        if (!$groupChat) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Discussion non trouvée'
+            ]);
+        }
+
         $arrayMessages = [];
 
         if ($lastMessageId === null) {

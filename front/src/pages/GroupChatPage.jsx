@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import { getUserInfos } from '../api/userInfo';
 import Message from "../components/Message";
 import { formatTime } from '../assets/js/formatDate'
+import ErrorPage from './ErrorPage';
 
 function GroupChatPage() {
 
@@ -22,6 +23,8 @@ function GroupChatPage() {
     const [lastMessage, setLastMessage] = useState(null);
     const [activityName, setActivityName] = useState('');
     const [usersInActivity, setUsersInActivity] = useState([]);
+
+    const [notFound, setNotFound] = useState(false);
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -152,11 +155,15 @@ function GroupChatPage() {
         startFetch();
         getMessages()
             .then((data) => {
+                if (data.success === true) {
+                    setLastMessage(data.lastMessages[0].id);
+                    data.lastMessages.forEach(message => {
+                        setMessages((prev) => [...prev, message]);
+                    });                    
+                } else {
+                    setNotFound(true);
+                }
 
-                setLastMessage(data.lastMessages[0].id);
-                data.lastMessages.forEach(message => {
-                    setMessages((prev) => [...prev, message]);
-                });
             })
             .catch(err => console.error(err))
             .finally(endFetch);
@@ -191,6 +198,7 @@ function GroupChatPage() {
             {
                 loadingCount > 0 ? <Loader /> :
 
+                    notFound === true ? <ErrorPage /> :
                     <section className="raw-limit-size center group-chat-page">
                         <div className="group-chat-header">
                             <div className="icon-container">

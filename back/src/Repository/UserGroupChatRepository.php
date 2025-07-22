@@ -58,6 +58,16 @@ class UserGroupChatRepository extends ServiceEntityRepository
         ;
    }
 
+   public function getUserGroupChatByGC(GroupChat $gc): array
+   {
+        return $this->createQueryBuilder('ugc')
+            ->andWhere('ugc.groupchat = :gc')
+            ->setParameter('gc', $gc)
+            ->getQuery()
+            ->getResult()
+        ;
+   }
+
 //    public function findOneBySomeField($value): ?UserGroupChat
 //    {
 //        return $this->createQueryBuilder('u')
