@@ -126,9 +126,10 @@ final class UserController extends AbstractController
 
         // On boucle sur les entités GroupChat pour récupérer toutes les infos de l'entité Activity (User et Sport) lié à chaque entité GroupChat
         foreach ($groupChat as $joinedActivity) {
-            $activityInfos = $activityRepository->getActivityInfos($joinedActivity->getActivity());
+            $activityInfos = $activityRepository->getActivityInfos($joinedActivity->getActivity(), new \DateTimeImmutable('today'));
             // si l'id user de l'activité est le meme que l'id user => le user est créateur de l'activité, on le prend pas en compte
-            if ($activityInfos['user']['id'] !== $userEntity->getId()) {
+
+            if ($activityInfos !== null && $activityInfos['user']['id'] !== $userEntity->getId()) {
                 $futureActivities[] = $activityInfos;
             }
         }

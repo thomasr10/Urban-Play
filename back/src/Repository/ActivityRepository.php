@@ -73,14 +73,16 @@ class ActivityRepository extends ServiceEntityRepository
         ;
    }
 
-   public function getActivityInfos(Activity $activity): array
+   public function getActivityInfos(Activity $activity, \DateTimeImmutable $now): ?array
    {
         return $this->createQueryBuilder('a')
             ->select('a', 'u', 's')
             ->join('a.user', 'u')
             ->join('a.sport', 's')
             ->andWhere('a = :activity')
+            ->andWhere('a.activity_date >= :now')
             ->setParameter('activity', $activity)
+            ->setParameter('now', $now)
             ->getQuery()
             ->getOneOrNullResult(Query::HYDRATE_ARRAY)
         ;

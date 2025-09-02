@@ -161,6 +161,7 @@ function HomeConnected() {
             startFetch();
             getUserFutureActivities().then((data) => {
                 if (data.success === true) {
+                    console.log(data)
                     setFutureActivities(data.futureActivities);
                 }
             })

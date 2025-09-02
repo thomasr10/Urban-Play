@@ -84,9 +84,9 @@ final class RegisterController extends AbstractController
         $data = json_decode( $request->getContent(), true);
         $token = $data['token'];
         $user = $userRepository->getUserFromToken($token);
+
         $token_limit = $user->getTokenLimit();
         $now = new \DateTimeImmutable();
-
         if ( $now > $token_limit) {
             return $this->json([
                 'message' => 'Le lien a expiré',
