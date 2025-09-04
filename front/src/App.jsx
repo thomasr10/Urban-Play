@@ -16,33 +16,73 @@ import MessagePage from './pages/MessagePage';
 import GroupChatPage from './pages/GroupChatPage';
 import UserActivity from './pages/UserActivity';
 import ErrorPage from './pages/ErrorPage';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './context/AdminRoute';
+import UserRoute from './context/UserRoute';
 
 function App() {
 
   const location = useLocation();
 
   const isGroupChatPage = location.pathname.startsWith('/discussion/')
+  const isAdminDashboard = location.pathname.startsWith('/admin');
 
   return (
     <AuthProvider>
       {!isGroupChatPage && <Header />}
       <Routes>
-        <Route path="/register" element={<Register/>} />
-        <Route path="/new-user/:id" element={<NewUser/>} />
-        <Route path="/verify-token" element={<VerifiyToken/>} />
-        <Route path="/new-token" element={<NewToken/>} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/new-user/:id" element={<NewUser />} />
+        <Route path="/verify-token" element={<VerifiyToken />} />
+        <Route path="/new-token" element={<NewToken />} />
+        <Route path="/login" element={<Login />} />
         <Route path='/' element={<Home />} />
-        <Route path='/activite/:id' element={<ActivityPage />} />
-        <Route path='/mes-activites' element={<UserActivity />} />
-        <Route path='/profil' element={<Profil />} />
-        <Route path='/modifier-profil' element={<ModifyProfil />} />
-        <Route path='/activite/creer' element={<CreateActivity />} />
-        <Route path='/messagerie' element={<MessagePage />} />
-        <Route path='/discussion/:id' element={<GroupChatPage />} />
+        <Route path='/activite/:id' element={
+          <UserRoute>
+            <ActivityPage />
+          </UserRoute>
+          } />
+        <Route path='/mes-activites' element={
+          <UserRoute>
+            <UserActivity />
+          </UserRoute>
+          } />
+        <Route path='/profil' element={
+          <UserRoute>
+            <Profil />
+          </UserRoute>
+          } />
+        <Route path='/modifier-profil' element={
+          <UserRoute>
+            <ModifyProfil />
+          </UserRoute>
+          } />
+        <Route path='/activite/creer' element={
+          <UserRoute>
+            <CreateActivity />
+          </UserRoute>
+          } />
+        <Route path='/messagerie' element={
+          <UserRoute>
+            <MessagePage />
+          </UserRoute>
+          } />
+        <Route path='/discussion/:id' element={
+          <UserRoute>
+            <GroupChatPage />
+          </UserRoute>
+          } />
         <Route path='*' element={<ErrorPage />} />
+        <Route path='/admin/admin-login' element={<AdminLogin />} />
+        <Route path='/admin/dashboard'
+          element={
+            <AdminRoute >
+              <AdminDashboard />
+            </AdminRoute>
+          } />
       </Routes>
-      {!isGroupChatPage && <Menu />}
+      {(!isGroupChatPage && !isAdminDashboard) && <Menu />}
     </AuthProvider>
   )
 }

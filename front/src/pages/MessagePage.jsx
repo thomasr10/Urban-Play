@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getUserInfos } from "../api/userInfo";
 import GroupChat from "../components/GroupChat";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function MessagePage() {
 
@@ -10,6 +11,8 @@ function MessagePage() {
     const [userId, setUserId] = useState(null);
     const [arrayGroupChat, setArrayGroupChat] = useState([]);
     const navigate = useNavigate();
+
+    const { loggedFetch, isUser, isAuthenticated } = useAuth();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -24,30 +27,27 @@ function MessagePage() {
     }
 
     useEffect(() => {
-        startFetch();
-        getUserInfos()
-        .then((data) => {
-            setUserId(data.id);
-        })
-        .catch(err => console.error(err))
-        .finally(endFetch);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch)
+                .then((data) => {
+                    setUserId(data.id);
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
+
+        }
     }, []);
 
     async function getUserGroupChat() {
         try {
-            const response = await fetch('/api/user/group-chat', {
+            const data = await loggedFetch('/api/user/group-chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ userId })
             });
 
-            const data  = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -61,34 +61,34 @@ function MessagePage() {
         if (userId) {
             startFetch();
             getUserGroupChat()
-            .then((data) => {
-                console.log(data);
-                setArrayGroupChat(data.groupChat);
-            })
-            .catch(err => console.error(err))
-            .finally(endFetch);
+                .then((data) => {
+                    console.log(data);
+                    setArrayGroupChat(data.groupChat);
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
         }
     }, [userId])
 
     return (
         <>
-        {
-            loadingCount > 0 ? <Loader/> :
+            {
+                loadingCount > 0 ? <Loader /> :
 
-            <section className="raw-limit-size center">
-                <h1>Discussions</h1>
+                    <section className="raw-limit-size center">
+                        <h1>Discussions</h1>
 
-                <div className="group-chat-container">
-                    {
-                        arrayGroupChat ?
-                        arrayGroupChat.map((groupChat) => (
-                            <GroupChat key={groupChat.id} onClick={() => goToMessage(groupChat.id)} activityName={groupChat.activity.name} messageSender={(groupChat.last_message) ? (groupChat.last_message.user.id === userId) ? 'Moi : ' : `${groupChat.last_message.user.first_name} : ` : ''} messageContent={(groupChat.last_message) ? groupChat.last_message.content : 'Aucun message'}/>
-                        )) :
-                        'Aucun groupe de discussion pour le moment. Rejoignez une activité pour faire partie d\'un groupe.'
-                    }
-                </div>
-            </section>
-        }
+                        <div className="group-chat-container">
+                            {
+                                arrayGroupChat ?
+                                    arrayGroupChat.map((groupChat) => (
+                                        <GroupChat key={groupChat.id} onClick={() => goToMessage(groupChat.id)} activityName={groupChat.activity.name} messageSender={(groupChat.last_message) ? (groupChat.last_message.user.id === userId) ? 'Moi : ' : `${groupChat.last_message.user.first_name} : ` : ''} messageContent={(groupChat.last_message) ? groupChat.last_message.content : 'Aucun message'} />
+                                    )) :
+                                    'Aucun groupe de discussion pour le moment. Rejoignez une activité pour faire partie d\'un groupe.'
+                            }
+                        </div>
+                    </section>
+            }
 
         </>
     )

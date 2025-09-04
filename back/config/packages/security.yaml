@@ -9,6 +9,12 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        
+        app_admin_provider:
+            entity:
+                class: App\Entity\Admin
+                property: email
+
     firewalls:
         register:
             pattern: ^/api/register
@@ -23,6 +29,11 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            provider: app_user_provider
+        admin_login:
+            pattern: ^/admin/login
+            stateless: true
+            security: false
         verify_token:
             pattern: ^/api/verify-token
             security: false
@@ -45,6 +56,12 @@ security:
             stateless: true
             provider: app_user_provider
             jwt: ~
+        
+        admin_api:
+            pattern: ^/admin/api
+            stateless: true
+            provider: app_admin_provider
+            jwt: ~
 
         main:
             lazy: true
@@ -64,9 +81,9 @@ security:
         - { path: ^/api/verify-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/new-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/admin/api, roles: ROLE_ADMIN }
 
 when@test:
     security:

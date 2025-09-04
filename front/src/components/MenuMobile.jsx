@@ -4,8 +4,8 @@ import { useAuth } from "../context/AuthContext";
 
 function MenuMobile() {
 
-    const { isAuthenticated } = useAuth();
-    return isAuthenticated ? (
+    const { isAuthenticated, isUser } = useAuth();
+    return (isAuthenticated && isUser) ? (
         <nav className='menu-container'>
             <ul className='menu'>
                 <li>

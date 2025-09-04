@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import Loader from '../components/Loader';
 import ErrorPage from './ErrorPage';
 import MessageModal from '../components/MessageModal';
+import { useAuth } from '../context/AuthContext';
 
 function ActivityPage() {
 
@@ -32,7 +33,9 @@ function ActivityPage() {
     const [groupChatId, setGroupChatId] = useState(null);
 
     const [modalVisibility, setModalVisibility] = useState(false);
-    const [modalData, setModalData] = useState({})
+    const [modalData, setModalData] = useState({});
+
+    const { loggedFetch, isAuthenticated, isUser } = useAuth();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -43,29 +46,25 @@ function ActivityPage() {
     }
 
     useEffect(() => {
-        startFetch();
-        getUserInfos().then((data) => {
-            setUserId(data.id);
-        })
-            .catch(err => console.error(err))
-            .finally(endFetch);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch).then((data) => {
+                setUserId(data.id);
+            })
+                .catch(err => console.error(err))
+                .finally(endFetch);
+        }
 
     }, []);
 
     async function getActivityInfos() {
         try {
-            const response = await fetch(`/api/activity/${id}`, {
+            const data = await loggedFetch(`/api/activity/${id}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
             });
 
-            const data = response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -108,19 +107,13 @@ function ActivityPage() {
 
     async function getActivityGroupChat() {
         try {
-            const response = await fetch('/api/activity/groupchat', {
+            const data = await loggedFetch('/api/activity/groupchat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ id })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -145,19 +138,13 @@ function ActivityPage() {
 
     async function isUserInActivity() {
         try {
-            const response = await fetch('/api/user/activity', {
+            const data = await loggedFetch('/api/user/activity', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ userId, id })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -188,19 +175,13 @@ function ActivityPage() {
         startFetch();
 
         try {
-            const response = await fetch('/api/activity/add-user', {
+            const data = await loggedFetch('/api/activity/add-user', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ id, userId })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             setIsInActivity(true);

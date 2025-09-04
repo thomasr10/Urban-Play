@@ -3,6 +3,7 @@ import { getUserInfos } from "../api/userInfo";
 import { useEffect, useRef, useState } from "react";
 import Loader from '../components/Loader';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function ModifyProfil() {
     // User
@@ -23,6 +24,8 @@ function ModifyProfil() {
     // Loader
     const [loadingCount, setLoadingCount] = useState(0);
 
+    const { loggedFetch, isAuthenticated, isUser } = useAuth();
+
     function startFetch() {
         setLoadingCount(prev => prev + 1);
     }
@@ -32,38 +35,34 @@ function ModifyProfil() {
     }
 
     useEffect(() => {
-        startFetch();
-        getUserInfos().then((data) => {
-            console.log(data)
-            setName(data.firstName + ' ' + data.lastName);
-            setBio(data.description);
-            setEmail(data.email);
-            setIsPublic(data.is_public);
-            setIsActivityNotification(data.activityNotif);
-            setPerimeter(data.perimeter);
-            setUserId(data.id);
-
-        }).catch((err) => console.error(err))
-            .finally(endFetch);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch).then((data) => {
+                console.log(data)
+                setName(data.firstName + ' ' + data.lastName);
+                setBio(data.description);
+                setEmail(data.email);
+                setIsPublic(data.is_public);
+                setIsActivityNotification(data.activityNotif);
+                setPerimeter(data.perimeter);
+                setUserId(data.id);
+    
+            }).catch((err) => console.error(err))
+                .finally(endFetch);
+        }
     }, []);
 
     async function validateUserData(e) {
         e.preventDefault();
         startFetch();
         try {
-            const response = await fetch('/api/user/modify', {
+            const data = await loggedFetch('/api/user/modify', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify({ bio, isPublic, isActivityNotification, perimeter, userId })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;

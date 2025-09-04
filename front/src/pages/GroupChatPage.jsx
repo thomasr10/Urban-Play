@@ -9,6 +9,7 @@ import { getUserInfos } from '../api/userInfo';
 import Message from "../components/Message";
 import { formatTime } from '../assets/js/formatDate'
 import ErrorPage from './ErrorPage';
+import { useAuth } from '../context/AuthContext';
 
 function GroupChatPage() {
 
@@ -25,6 +26,8 @@ function GroupChatPage() {
     const [usersInActivity, setUsersInActivity] = useState([]);
 
     const [notFound, setNotFound] = useState(false);
+
+    const { isAuthenticated, isUser, loggedFetch } = useAuth();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -82,14 +85,16 @@ function GroupChatPage() {
     }, [id])
 
     useEffect(() => {
-        startFetch();
-        getUserInfos()
-            .then((data) => {
-                setUserId(data.id);
-                setFirstName(data.first_name);
-            })
-            .catch(err => console.error(err))
-            .finally(endFetch);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch)
+                .then((data) => {
+                    setUserId(data.id);
+                    setFirstName(data.first_name);
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
+        }
     }, [])
 
     useEffect(() => {
@@ -129,7 +134,7 @@ function GroupChatPage() {
 
     async function getMessages() {
         try {
-            const response = await fetch('/api/message/get', {
+            const data = await fetch('/api/message/get', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,10 +143,8 @@ function GroupChatPage() {
                 body: JSON.stringify({ id, lastMessage })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -159,7 +162,7 @@ function GroupChatPage() {
                     setLastMessage(data.lastMessages[0].id);
                     data.lastMessages.forEach(message => {
                         setMessages((prev) => [...prev, message]);
-                    });                    
+                    });
                 } else {
                     setNotFound(true);
                 }
@@ -199,55 +202,55 @@ function GroupChatPage() {
                 loadingCount > 0 ? <Loader /> :
 
                     notFound === true ? <ErrorPage /> :
-                    <section className="raw-limit-size center group-chat-page">
-                        <div className="group-chat-header">
-                            <div className="icon-container">
-                                <ArrowLeft onClick={() => goToGroupChatPage()} />
-                            </div>
-                            <div className="group-chat-pp">
-                                <div className="background">
-                                    <Users className="icon" />
+                        <section className="raw-limit-size center group-chat-page">
+                            <div className="group-chat-header">
+                                <div className="icon-container">
+                                    <ArrowLeft onClick={() => goToGroupChatPage()} />
                                 </div>
-                            </div>
-                            <div className="content">
-                                <span className="activity-name">{activityName}</span>
-                                <div>
-                                    {
-                                        usersInActivity && (
-                                            usersInActivity.map((user, index) => (
-                                                <span key={index} className="activity-users">
-                                                    {
-                                                        (index === 5) ? '...' : (index < usersInActivity.length - 1) ? (userId == user.id) ? 'Moi, ' : `${user.first_name}, ` : (userId == user.id) ? 'Moi' : user.first_name
-                                                    }
-                                                </span>
-                                            ))
-                                        )
-                                    }
+                                <div className="group-chat-pp">
+                                    <div className="background">
+                                        <Users className="icon" />
+                                    </div>
+                                </div>
+                                <div className="content">
+                                    <span className="activity-name">{activityName}</span>
+                                    <div>
+                                        {
+                                            usersInActivity && (
+                                                usersInActivity.map((user, index) => (
+                                                    <span key={index} className="activity-users">
+                                                        {
+                                                            (index === 5) ? '...' : (index < usersInActivity.length - 1) ? (userId == user.id) ? 'Moi, ' : `${user.first_name}, ` : (userId == user.id) ? 'Moi' : user.first_name
+                                                        }
+                                                    </span>
+                                                ))
+                                            )
+                                        }
 
+                                    </div>
+                                </div>
+                                <div className="icon-container">
+                                    {
+                                        (isMuted === false) ? <BellRing onClick={() => changeNotificationParam()} /> :
+                                            <BellOff onClick={() => changeNotificationParam()} />
+                                    }
                                 </div>
                             </div>
-                            <div className="icon-container">
+                            <div className="msg-container">
                                 {
-                                    (isMuted === false) ? <BellRing onClick={() => changeNotificationParam()} /> :
-                                        <BellOff onClick={() => changeNotificationParam()} />
+                                    messages && (
+                                        messages.map((message) => (
+                                            <Message key={message.id} senderId={message.senderId} userId={userId} senderName={message.senderName} content={message.content} sentAt={formatTime(message.sentAt)} />
+                                        ))
+                                    )
                                 }
                             </div>
-                        </div>
-                        <div className="msg-container">
-                            {
-                                messages && (
-                                    messages.map((message) => (
-                                        <Message key={message.id} senderId={message.senderId} userId={userId} senderName={message.senderName} content={message.content} sentAt={formatTime(message.sentAt)} />
-                                    ))
-                                )
-                            }
-                        </div>
-                        <div className="send-msg-container">
-                            <div className="input-container">
-                                <TextareaMessage onSend={sendMessage} />
+                            <div className="send-msg-container">
+                                <div className="input-container">
+                                    <TextareaMessage onSend={sendMessage} />
+                                </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
             }
         </>
     )

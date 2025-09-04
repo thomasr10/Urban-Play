@@ -1,6 +1,5 @@
 import { formatDate, formatTime } from "../assets/js/formatDate";
 import { capitalizeText } from "../assets/js/capitalizeText";
-import { useNavigate } from "react-router-dom";
 
 function UserActivities ({ creatorName, creatorId, activityDate, activityDescription, currentPlayers, maxPlayers, location, userId, from, to, onClick }) {
     

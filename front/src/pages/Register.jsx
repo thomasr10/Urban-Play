@@ -14,7 +14,7 @@ function Register() {
     const [gender, setGender] = useState('');
 
     const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();
+    const { login, isAuthenticated, isUser } = useAuth();
 
     // Loader
     const [loadingCount, setLoadingCount] = useState(0);
@@ -29,7 +29,7 @@ function Register() {
 
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && isUser) {
             navigate('/');
         }
     }, [isAuthenticated, navigate]);

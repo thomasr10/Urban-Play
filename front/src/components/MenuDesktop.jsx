@@ -12,13 +12,13 @@ function MenuDesktop() {
         isOpen === false ? setIsOpen(true) : setIsOpen(false);
     }
 
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isUser } = useAuth();
 
     useEffect(() => {
         setIsOpen(false);
     }, [location.pathname])
 
-    return isAuthenticated && (
+    return (isAuthenticated && isUser) && (
         <div className='burger-menu-container'>
             <div className="icon-container" onClick={() => openMenu()}>
                 {

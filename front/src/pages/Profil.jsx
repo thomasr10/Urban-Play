@@ -4,6 +4,7 @@ import { getUserInfos } from "../api/userInfo";
 import { useEffect, useState } from "react";
 import Loader from '../components/Loader';
 import { User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 function Profil() {
 
@@ -15,6 +16,8 @@ function Profil() {
     // Loader
     const [loadingCount, setLoadingCount] = useState(0);
 
+    const { loggedFetch, isAuthenticated, isUser } = useAuth();
+
     function startFetch() {
         setLoadingCount(prev => prev + 1);
     }
@@ -24,31 +27,27 @@ function Profil() {
     }
 
     useEffect(() => {
-        startFetch();
-        getUserInfos().then((data) => {
-            console.log(data)
-            setActivities(data.activities);
-            setUserId(data.id);
-            setUserDesc(data.description);
-        }).catch((err) => console.error(err))
-            .finally(endFetch);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch).then((data) => {
+                console.log(data)
+                setActivities(data.activities);
+                setUserId(data.id);
+                setUserDesc(data.description);
+            }).catch((err) => console.error(err))
+                .finally(endFetch);
+        }
     }, [])
 
-    async function getUserActivity () {
+    async function getUserActivity() {
         try {
-            const response = await fetch('/api/user/activity/count', {
+            const data = await loggedFetch('/api/user/activity/count', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ userId })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -62,11 +61,11 @@ function Profil() {
         if (userId) {
             startFetch();
             getUserActivity()
-            .then((data) => {
-                setCountAllActivities(data.count_activities);
-            })
-            .catch(err => console.error(err))
-            .finally(endFetch);
+                .then((data) => {
+                    setCountAllActivities(data.count_activities);
+                })
+                .catch(err => console.error(err))
+                .finally(endFetch);
         }
     }, [userId]);
 
@@ -80,14 +79,14 @@ function Profil() {
                             <h1>Mon profil</h1>
                             <div className="pp-container">
                                 <div className="background">
-                                    <User className="icon"/>
+                                    <User className="icon" />
                                 </div>
                             </div>
                         </section>
                         <section className="profil-content">
                             <div className="flex-col">
                                 <span className="title">Ma biographie</span>
-                                <p className="bio-value">{ userDesc }</p>
+                                <p className="bio-value">{userDesc}</p>
                             </div>
                             {/* <div className="flex-between">
                                 <span className="title">Mes intérêts</span>
@@ -95,7 +94,7 @@ function Profil() {
                             </div> */}
                             <div className="flex-between">
                                 <span className="title">Activités réalisées</span>
-                                <span className="value">{ countAllActivities }</span>
+                                <span className="value">{countAllActivities}</span>
                             </div>
                             <div className="flex-between">
                                 <span className="title">Activités créées</span>

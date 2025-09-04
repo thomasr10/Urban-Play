@@ -7,7 +7,6 @@ function NewToken () {
     const token = searchParams.get('expired_token');
     const [id, setId] = useState('');
     const navigate = useNavigate();
-
     // Loader
     const [loadingCount, setLoadingCount] = useState(0);
 

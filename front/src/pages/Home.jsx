@@ -4,8 +4,8 @@ import HomeUnconnected from "./HomeUnconnected";
 
 function Home () {
 
-    const { isAuthenticated } = useAuth();
-    return isAuthenticated ? <HomeConnected /> : <HomeUnconnected />;
+    const { isAuthenticated, isUser } = useAuth();
+    return (isAuthenticated && isUser) ? <HomeConnected /> : <HomeUnconnected />;
 
 }
 

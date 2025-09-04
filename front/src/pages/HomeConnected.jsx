@@ -1,11 +1,12 @@
 import { Search, User } from 'lucide-react';
 import Map from "../components/Map";
-import { act, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getUserInfos } from "../api/userInfo";
 import ActivityModal from "../components/ActivityModal";
 import UserActivities from '../components/UserActivity';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
+import { useAuth } from '../context/AuthContext';
 
 function HomeConnected() {
     const [lat, setLat] = useState(null);
@@ -19,6 +20,8 @@ function HomeConnected() {
     const [futureActivities, setFutureActivities] = useState([]);
     const navigate = useNavigate();
     const [loadingCount, setLoadingCount] = useState(0);
+
+    const { isAuthenticated, isUser, loggedFetch } = useAuth();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -44,34 +47,30 @@ function HomeConnected() {
 
     // Récupérer les infos du user (périmètre pour établir la recherche)
     useEffect(() => {
-        startFetch();
-        getUserInfos().then((data) => {
-            setPerimeter(data.perimeter);
-            setUserId(data.id);
-        })
-            .catch((err) => {
-                console.error(err);
+        if (isAuthenticated && isUser) {
+            startFetch();
+            getUserInfos(loggedFetch).then((data) => {
+                setPerimeter(data.perimeter);
+                setUserId(data.id);
             })
-            .finally(endFetch);
+                .catch((err) => {
+                    console.error(err);
+                })
+                .finally(endFetch);
+        }
     }, []);
 
     // Récupérer les lieux sportifs via l'api du gvt
     async function getSportsLocation() {
 
         try {
-            const response = await fetch('/api/sports-location', {
+            const data = await loggedFetch('/api/sports-location', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify({ userInfos: { lat: lat, long: long, perimeter: perimeter } })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -134,19 +133,13 @@ function HomeConnected() {
 
     async function getUserFutureActivities() {
         try {
-            const response = await fetch('/api/user/future-activities', {
+            const data = await loggedFetch('/api/user/future-activities', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify({ userId })
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`Erreur Http : ${response.status}, ${data.message}`);
+            if (!data) {
+                throw new Error('Aucune donnée reçue');
             }
 
             return data;
@@ -165,8 +158,8 @@ function HomeConnected() {
                     setFutureActivities(data.futureActivities);
                 }
             })
-            .catch(err => console.error(err))
-            .finally(endFetch);
+                .catch(err => console.error(err))
+                .finally(endFetch);
         }
     }, [userId])
 
@@ -174,48 +167,48 @@ function HomeConnected() {
         <>
             {
                 loadingCount > 0 ? <Loader /> :
-                <section className="raw-limit-size center home-connected">
-                    <section className="search-activities">
-                        <div className="search-container">
-                            <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité" />
-                            <Search className="search-input" />
-                        </div>
-    
-                        {lat !== null && long !== null ? (
-                            <div>
-                                <Map lat={lat} long={long} markers={markers} onMarkerClick={openModal} />
+                    <section className="raw-limit-size center home-connected">
+                        <section className="search-activities">
+                            <div className="search-container">
+                                <input type="search" name="search-bar" id="search-bar" placeholder="Rechercher une activité" />
+                                <Search className="search-input" />
+                            </div>
+
+                            {lat !== null && long !== null ? (
+                                <div>
+                                    <Map lat={lat} long={long} markers={markers} onMarkerClick={openModal} />
+                                    {
+                                        countResult < 1 ? <p className='map-result'>Aucun résultat à proximité</p> :
+                                            countResult == 1 ? <p className='map-result'>Afficher le résultat</p> :
+                                                <p className='map-result'>Afficher les {countResult} résultats</p>
+                                    }
+                                </div>
+                            ) : (
+                                <div className="loading-msg-container">
+                                    <p className="loading-message">Chargement de votre position...</p>
+                                </div>
+                            )}
+
+                        </section>
+                        <section className="home-activities">
+                            <h2>Mes prochaines activités</h2>
+                            <div className='activities-container'>
                                 {
-                                    countResult < 1 ? <p className='map-result'>Aucun résultat à proximité</p> :
-                                    countResult == 1 ? <p className='map-result'>Afficher le résultat</p> :
-                                    <p className='map-result'>Afficher les {countResult} résultats</p>
+                                    futureActivities.length > 0 ? (
+
+                                        futureActivities.map((activity) => (
+                                            <UserActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
+                                        ))
+
+                                    ) :
+                                        <p className='no-activity-msg'>Aucune activité prévue prochainement</p>
                                 }
                             </div>
-                        ) : (
-                            <div className="loading-msg-container">
-                                <p className="loading-message">Chargement de votre position...</p>
-                            </div>
-                        )}
-    
+                        </section>
                     </section>
-                    <section className="home-activities">
-                        <h2>Mes prochaines activités</h2>
-                        <div className='activities-container'>
-                            {
-                                futureActivities.length > 0 ? (
-    
-                                    futureActivities.map((activity) => (
-                                        <UserActivities key={activity.id} onClick={() => goToActivity(activity.id)} creatorName={activity.user.first_name} creatorId={activity.user.id} activityDate={activity.activity_date.date} activityDescription={activity.description} currentPlayers={activity.current_players} maxPlayers={activity.max_players} location={activity.location_name} userId={userId} from={activity.hour_from.date} to={activity.hour_to.date} />
-                                    ))
-    
-                                ) :
-                                    <p className='no-activity-msg'>Aucune activité prévue prochainement</p>
-                            }
-                        </div>
-                    </section>
-                </section>
             }
             {/* MODAL */}
-    
+
             {
                 selectedMarker && (
                     <ActivityModal coordinates={selectedMarker.coords} name={selectedMarker.name} adress={selectedMarker.adress} onClose={closeModal} />

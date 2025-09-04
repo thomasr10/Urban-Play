@@ -1,21 +1,13 @@
-export async function getUserInfos () {
-
-    const token = localStorage.getItem('token');
+export async function getUserInfos (loggedFetch) {
 
     try {
         
-        const response = await fetch('http://127.0.0.1:8000/api/me', {
+        const data = await loggedFetch('http://127.0.0.1:8000/api/me', {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
         })
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(`Erreur http : ${response.status}, ${data.message}`);
+        if (!data) {
+            throw new Error('Aucune donnée reçue');
         }
 
         return data;

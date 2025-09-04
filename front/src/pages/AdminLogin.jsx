@@ -1,19 +1,16 @@
+import Loader from "../components/Loader";
 import Button from "../components/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
-import Loader from "../components/Loader";
 
-function Login() {
+function AdminLogin() {
 
+    const [loadingCount, setLoadingCount] = useState(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const { login, isAuthenticated, isUser, isAdmin } = useAuth();
-
-    // Loader
-    const [loadingCount, setLoadingCount] = useState(0);
+    const { login, isAuthenticated, isAdmin } = useAuth();
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -24,23 +21,16 @@ function Login() {
     }
 
     useEffect(() => {
-        if (isAuthenticated) {
-            if (isUser) {
-                navigate('/');
-            }
-
-            if (isAdmin) {
-                navigate('/admin/dashboard')
-            }
+        if (isAuthenticated && isAdmin) {
+            navigate('/admin/dashboard');
         }
+    }, [isAuthenticated, navigate])
 
-    }, [isAuthenticated, navigate, isAdmin, isUser]);
-
-    async function sendLoginData(e) {
+    async function sendAdminLoginData(e) {
         e.preventDefault();
         startFetch();
         try {
-            const response = await fetch('/api/login_check', {
+            const response = await fetch('http://127.0.0.1:8000/admin/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -53,7 +43,7 @@ function Login() {
             }
 
             login(data.token);
-            navigate('/');
+            navigate('/admin/dashboard');
 
         } catch (err) {
             console.error(err);
@@ -69,7 +59,7 @@ function Login() {
                 loadingCount > 0 ? <Loader /> :
                     <section className="raw-limit-size center">
                         <h1 className="h1-form">Connexion</h1>
-                        <form className="form" onSubmit={sendLoginData}>
+                        <form className="form" onSubmit={sendAdminLoginData}>
                             <div>
                                 <label htmlFor="email">Adresse mail</label>
                                 <input type="text" name="email" id="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Adresse mail" required />
@@ -82,11 +72,10 @@ function Login() {
                                 <Button type="submit">Valider</Button>
                             </div>
                         </form>
-                        <Link to='/register' className="account-link">Je n'ai pas de compte</Link>
                     </section>
             }
         </>
     )
 }
 
-export default Login;
+export default AdminLogin;
