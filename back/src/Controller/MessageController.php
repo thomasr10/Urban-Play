@@ -36,7 +36,7 @@ final class MessageController extends AbstractController
         $em->persist($newMessage);
         $em->flush();
 
-        $ws = new Client('ws://localhost:8080');
+        $ws = new Client('ws://localhost:8081');
         $ws->send(json_encode([
             'type' => 'message',
             'id' => $newMessage->getId(),

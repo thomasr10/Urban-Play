@@ -99,7 +99,7 @@ function GroupChatPage() {
 
     useEffect(() => {
         startFetch();
-        const socket = new WebSocket('ws://localhost:8080');
+        const socket = new WebSocket('ws://localhost:8081');
         socketRef.current = socket;
 
         socket.addEventListener('open', () => {
@@ -134,7 +134,7 @@ function GroupChatPage() {
 
     async function getMessages() {
         try {
-            const data = await fetch('/api/message/get', {
+            const data = await loggedFetch('/api/message/get', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

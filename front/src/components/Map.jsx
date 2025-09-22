@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 function Map({ lat = 48.8566, long = 2.3522, zoom = 13, markers = [], onMarkerClick }) {
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
-    const markersLayerRef = useRef(null);
+    const markersRef = useRef(null);
 
     useEffect(() => {
         const container = mapContainerRef.current;
@@ -36,8 +36,8 @@ function Map({ lat = 48.8566, long = 2.3522, zoom = 13, markers = [], onMarkerCl
         const map = mapRef.current;
         if (!map) return;
 
-        if (markersLayerRef.current) {
-            markersLayerRef.current.clearLayers();
+        if (markersRef.current) {
+            markersRef.current.clearLayers();
         }
 
         const sportIcon = L.icon({
@@ -56,7 +56,7 @@ function Map({ lat = 48.8566, long = 2.3522, zoom = 13, markers = [], onMarkerCl
         });
 
         layerGroup.addTo(map);
-        markersLayerRef.current = layerGroup;
+        markersRef.current = layerGroup;
     }, [markers]);
 
     return (

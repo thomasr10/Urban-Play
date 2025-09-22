@@ -20,7 +20,6 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './context/AdminRoute';
 import UserRoute from './context/UserRoute';
-
 function App() {
 
   const location = useLocation();

@@ -54,8 +54,7 @@ final class ActivityController extends AbstractController
             ], 200);
         }
 
-        // get Sport entity + User entity
-        
+        // get Sport entity + User entity       
         $sportEntity = $sportRepository->getSportEntityFromId(intval($data['sportId']));
         $userEntity = $userRepository->findOneById($data['userId']);
 

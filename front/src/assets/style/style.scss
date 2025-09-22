@@ -1543,3 +1543,67 @@ input[type="checkbox"] {
         }
     }
 }
+
+.admin-menu-container {
+
+    width: 100%;
+    max-width: 240px;
+    border-right: solid 1px var(--blue-main);
+    position: fixed;
+    height: 100%;
+
+    .admin-menu {
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+            margin-left: 1rem;
+
+            .link {
+                color: var(--blue-main);
+                font-family: var(--urban-medium);
+                font-size: 1.1rem;
+                transition: all ease .25s;
+
+                &:hover {
+                    color: var(--light-blue);
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+            }
+
+        }
+
+    }
+}
+
+.admin-content {
+    margin-left: 240px;
+}
+
+.admin-section {
+    h1 {
+        font-size: 1.5rem;
+        color: var(--blue-main);
+        font-family: var(--urban-bold);
+        text-align: center;
+        padding-top: 24px;
+    }
+}
+
+.admin-table-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+
+    .admin-table {
+        th {
+            border: solid 1px var(--blue-main);
+            padding: 1rem;
+            font-family: var(--urban-medium);
+            font-size: 0.9rem;
+        }
+    }
+}
