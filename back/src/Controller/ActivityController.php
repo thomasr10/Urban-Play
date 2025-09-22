@@ -25,8 +25,9 @@ final class ActivityController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $latitude = $data['coordinates'][1];
         $longitude = $data['coordinates'][0];
+        $todayDate = new \DateTimeImmutable('today');
 
-        $activities = $activityRepository->getFutureActivitiesFromLocation($latitude, $longitude);
+        $activities = $activityRepository->getFutureActivitiesFromLocation($latitude, $longitude, $todayDate);
 
         if (empty($activities)) {
             return $this->json([

@@ -21,7 +21,7 @@ class ActivityRepository extends ServiceEntityRepository
    /**
     * @return Activity[] Returns an array of Activity objects
     */
-   public function getFutureActivitiesFromLocation(float $lat, float $long): array
+   public function getFutureActivitiesFromLocation(float $lat, float $long, \DateTimeImmutable $todayDate): array
    {
        return $this->createQueryBuilder('a')
            ->select('a', 'sport', 'user')
@@ -30,8 +30,10 @@ class ActivityRepository extends ServiceEntityRepository
            ->andWhere('a.location_latitude = :lat')
            ->andWhere('a.location_longitude = :long')
            ->andWhere('a.is_done = 0')
+           ->andWhere('a.activity_date > :todayDate')
            ->setParameter('lat', $lat)
            ->setParameter('long', $long)
+           ->setParameter('todayDate', $todayDate)
            ->orderBy('a.id', 'DESC')
            ->setMaxResults(10)
            ->getQuery()
