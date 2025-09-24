@@ -126,4 +126,25 @@ class ActivityRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;   }
+        
+   public function getCountTotalActivities(): array
+   {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a)')
+            ->orderBy('a.id', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;   }
+
+        
+   public function getLatestActivities(int $offset): array
+   {
+        return $this->createQueryBuilder('a')
+            ->select('a')
+            ->orderBy('a.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getArrayResult()
+        ;   }
 }

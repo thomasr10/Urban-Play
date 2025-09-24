@@ -1370,10 +1370,43 @@ input[type=checkbox]:checked {
   display: flex;
   justify-content: center;
   margin-top: 24px;
+  padding: 0 1rem 1rem 1rem;
+  color: var(--blue-main);
+  flex-direction: column;
+}
+.admin-table-container .arrows-container {
+  display: flex;
+  justify-content: space-between;
+}
+.admin-table-container .arrows-container .arrow {
+  transition: color ease 0.2s;
+}
+.admin-table-container .arrows-container .arrow:hover {
+  cursor: pointer;
+  color: var(--light-blue);
 }
 .admin-table-container .admin-table th {
   border: solid 1px var(--blue-main);
   padding: 1rem;
   font-family: var(--urban-medium);
   font-size: 0.9rem;
+}
+.admin-table-container .admin-table .thead {
+  font-weight: 600;
+  background-color: var(--orange-main);
+}
+
+.pagination-container {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--blue-main);
+  font-family: var(--urban-light);
+}
+.pagination-container span {
+  transition: color ease 0.2s;
+}
+.pagination-container span:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--light-blue);
 }/*# sourceMappingURL=style.css.map */

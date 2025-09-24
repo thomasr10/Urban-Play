@@ -1597,6 +1597,22 @@ input[type="checkbox"] {
     display: flex;
     justify-content: center;
     margin-top: 24px;
+    padding: 0 1rem 1rem 1rem;
+    color: var(--blue-main);
+    flex-direction: column;
+
+    .arrows-container {
+        display: flex;
+        justify-content: space-between;
+        
+        .arrow {
+            transition: color ease .2s;
+            &:hover {
+                cursor: pointer;
+                color: var(--light-blue);
+            }
+        }
+    }
 
     .admin-table {
         th {
@@ -1604,6 +1620,27 @@ input[type="checkbox"] {
             padding: 1rem;
             font-family: var(--urban-medium);
             font-size: 0.9rem;
+        }
+
+        .thead {
+            font-weight: 600;
+            background-color: var(--orange-main);
+        }
+    }
+}
+
+.pagination-container {
+    display: flex;
+    gap: .5rem;
+    color: var(--blue-main);
+    font-family: var(--urban-light);
+
+    span {
+        transition: color ease .2s;
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+            color: var(--light-blue);
         }
     }
 }

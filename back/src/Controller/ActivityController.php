@@ -248,4 +248,23 @@ final class ActivityController extends AbstractController
             'groupChatId' => $groupChat->getId()
         ]);
     }
+
+    #[Route('/admin/api/activity/latest', name: 'app_admin_activity_latest' ,methods: ['POST'])]
+    public function getLatestActivitiesForAdmin(Request $req, ActivityRepository $activityRepository): JSONResponse
+    {   
+        $data = json_decode($req->getContent(), true);
+        $pageNum = $data['numPage'];
+        
+        $totalActivities = $activityRepository->getCountTotalActivities();
+        $total = $totalActivities['1'];
+
+        $offset = $pageNum * 10 - 10;
+        $latestActivity = $activityRepository->getLatestActivities($offset);
+
+        return $this->json([
+            'success' => true,
+            'totalActivities' => $total,
+            'latestActivities' => $latestActivity
+        ]);
+    }
 }
