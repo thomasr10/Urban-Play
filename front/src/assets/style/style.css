@@ -450,6 +450,7 @@ section h1 {
   text-align: center;
   background-color: var(--orange-main);
   line-height: 80px;
+  z-index: 9999;
 }
 .header-connected .title-header {
   color: var(--blue-main);
@@ -1332,8 +1333,8 @@ input[type=checkbox]:checked {
   width: 100%;
   max-width: 240px;
   border-right: solid 1px var(--blue-main);
-  position: fixed;
   height: 100%;
+  position: absolute;
 }
 .admin-menu-container .admin-menu ul {
   display: flex;
@@ -1341,6 +1342,7 @@ input[type=checkbox]:checked {
   gap: 2rem;
   margin-top: 2rem;
   margin-left: 1rem;
+  position: fixed;
 }
 .admin-menu-container .admin-menu ul .link {
   color: var(--blue-main);
@@ -1404,9 +1406,18 @@ input[type=checkbox]:checked {
 }
 .pagination-container span {
   transition: color ease 0.2s;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .pagination-container span:hover {
   cursor: pointer;
   text-decoration: underline;
   color: var(--light-blue);
+}
+
+.bold {
+  font-weight: bold;
 }/*# sourceMappingURL=style.css.map */

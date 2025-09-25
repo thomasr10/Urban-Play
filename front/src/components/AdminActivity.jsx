@@ -10,6 +10,7 @@ function AdminActivity() {
     const [pageNum, setPageNum] = useState(1);
     const [arrayActivities, setArrayActivities] = useState([]);
     const [totalResult, setTotalResult] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const [arrayPagination, setArrayPagination] = useState([]);
 
@@ -61,13 +62,16 @@ function AdminActivity() {
 
     function goToPrevResults () {
         (pageNum === 1) ? setPageNum(1) : setPageNum(prev => prev - 1);
+        setCurrentPage(prev => prev - 1);
     }
     function goToNextResults () {
         (pageNum === arrayPagination.length) ? setPageNum(arrayPagination.length) : setPageNum(prev => prev + 1);
+        setCurrentPage(prev => prev + 1);
     }
 
     function goToPage(numPage) {
         setPageNum(numPage);
+        setCurrentPage(numPage);
     }
 
     function countPages(numResult) {
@@ -81,6 +85,7 @@ function AdminActivity() {
         return array;
     }
 
+    
     useEffect(() => {
         setArrayPagination(countPages(totalResult));
         console.log(arrayPagination)
@@ -96,7 +101,7 @@ function AdminActivity() {
                     <div className='pagination-container'>
                         { (arrayPagination.length > 1) && (
                             arrayPagination.map((num) => (
-                                <span onClick={() => goToPage(num)}>{ num }</span>
+                                <span onClick={() => goToPage(num)} className={(num === currentPage) ? 'bold' : ''}>{ num }</span>
                             ))
                         ) }
                     </div>
