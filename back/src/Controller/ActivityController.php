@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Repository\UserGroupChatRepository;
 use App\Repository\GroupChatRepository;
 use App\Entity\Activity;
+use App\Entity\ReportedActivity;
 use App\Entity\GroupChat;
 use App\Entity\UserGroupChat;
 use Doctrine\ORM\EntityManagerInterface;
@@ -266,5 +267,37 @@ final class ActivityController extends AbstractController
             'totalActivities' => $total,
             'latestActivities' => $latestActivity
         ]);
+    }
+
+    #[Route('/api/activity/report', name: 'app_activity_report', methods: ['POST'])]
+    public function reportActivity(Request $req, ActivityRepository $activityRepository, UserRepository $userRepository, EntityManagerInterface $em): JSONResponse
+    {
+        $data = json_decode($req->getContent(), true);
+        $activityEntity = $activityRepository->findOneById($data['id']);
+        $userEntity = $userRepository->findOneById($data['userId']);
+
+        if (!$activityEntity) {
+            
+            return $this->json([
+                'success' => false,
+                'message' => 'Activité non trouvée'
+            ]);
+        }
+        
+        $reportedActivity = new ReportedActivity();
+        $reportedActivity->setActivity($activityEntity);
+        $reportedActivity->setReason($data['reasonId']);
+        $reportedActivity->setComment($data['comment']);
+        $reportedActivity->setCreatedAt(new \DateTimeImmutable('today'));
+        $reportedActivity->setUser($userEntity);
+
+        $em->persist($reportedActivity);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Activité signalée avec succès !'
+        ]);
+        
     }
 }

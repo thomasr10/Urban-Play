@@ -1,13 +1,9 @@
 import { TriangleAlert } from 'lucide-react';
 
-function SignalButton () {
-
-    function test () {
-        alert('Activité signalée');
-    }
+function SignalButton ({ onClick }) {
 
     return (
-        <button className='signal-btn' onClick={test}><TriangleAlert /> Signaler </button>
+        <button className='signal-btn' onClick={onClick}><TriangleAlert /> Signaler </button>
     )
 }
 

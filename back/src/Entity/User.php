@@ -97,12 +97,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profil_picture = null;
 
+    /**
+     * @var Collection<int, ReportedActivity>
+     */
+    #[ORM\OneToMany(targetEntity: ReportedActivity::class, mappedBy: 'user')]
+    private Collection $reportedActivities;
+
+    /**
+     * @var Collection<int, ReportedUser>
+     */
+    #[ORM\OneToMany(targetEntity: ReportedUser::class, mappedBy: 'reported_user')]
+    private Collection $oneReportedUser;
+
     public function __construct()
     {
         $this->activities = new ArrayCollection();
         $this->reportedUsers = new ArrayCollection();
         $this->userGroupChats = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->reportedActivities = new ArrayCollection();
+        $this->oneReportedUser = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -449,6 +463,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilPicture(?string $profil_picture): static
     {
         $this->profil_picture = $profil_picture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReportedActivity>
+     */
+    public function getReportedActivities(): Collection
+    {
+        return $this->reportedActivities;
+    }
+
+    public function addReportedActivity(ReportedActivity $reportedActivity): static
+    {
+        if (!$this->reportedActivities->contains($reportedActivity)) {
+            $this->reportedActivities->add($reportedActivity);
+            $reportedActivity->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReportedActivity(ReportedActivity $reportedActivity): static
+    {
+        if ($this->reportedActivities->removeElement($reportedActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($reportedActivity->getUser() === $this) {
+                $reportedActivity->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReportedUser>
+     */
+    public function getOneReportedUser(): Collection
+    {
+        return $this->oneReportedUser;
+    }
+
+    public function addOneReportedUser(ReportedUser $oneReportedUser): static
+    {
+        if (!$this->oneReportedUser->contains($oneReportedUser)) {
+            $this->oneReportedUser->add($oneReportedUser);
+            $oneReportedUser->setReportedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOneReportedUser(ReportedUser $oneReportedUser): static
+    {
+        if ($this->oneReportedUser->removeElement($oneReportedUser)) {
+            // set the owning side to null (unless already changed)
+            if ($oneReportedUser->getReportedUser() === $this) {
+                $oneReportedUser->setReportedUser(null);
+            }
+        }
 
         return $this;
     }

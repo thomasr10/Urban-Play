@@ -70,6 +70,10 @@ function AuthProvider({ children }) {
             return null;
         }
 
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP : ${response.status}`);
+        }
+
         return response.json();
     }
 

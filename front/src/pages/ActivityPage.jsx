@@ -9,6 +9,9 @@ import Loader from '../components/Loader';
 import ErrorPage from './ErrorPage';
 import MessageModal from '../components/MessageModal';
 import { useAuth } from '../context/AuthContext';
+import ReportModal from '../components/ReportModal';
+import ConfirmReportModal from './ConfirmReportModal';
+import ReportDoneModal from '../components/ReportDoneModal';
 
 function ActivityPage() {
 
@@ -36,6 +39,16 @@ function ActivityPage() {
     const [modalData, setModalData] = useState({});
 
     const { loggedFetch, isAuthenticated, isUser } = useAuth();
+
+    const [reportModalOpen, setReportModalOpen] = useState(false);
+    const [reportModalData, setReportModalData] = useState({});
+
+    const [confirmReportModalOpen, setConfirmReportModalOpen] = useState(false);
+    const [comment, setComment] = useState('');
+
+    const [reportDoneModal, setReportDoneModal] = useState(false);
+
+    const [reasonId, setReasonId] = useState(null);
 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
@@ -205,6 +218,60 @@ function ActivityPage() {
         }
     }
 
+    const reportActivity = async () => {
+        startFetch();
+
+        try {
+            const data = await loggedFetch('/api/activity/report', {
+                method: 'POST',
+                body: JSON.stringify({ id, userId, comment, reasonId })
+            });
+
+            return data;
+
+        } catch (err) {
+
+            console.error(err);
+
+        } finally {
+            endFetch();
+            setConfirmReportModalOpen(false);
+            setComment('');
+            setReasonId(null);
+            setReportDoneModal(true);
+        }
+    }
+
+    const openReportModal = () => {
+        setReportModalOpen(true);
+
+        setReportModalData({
+            title: 'Signaler une activité',
+            subtitle: 'Activité signalée',
+            activityName: `Activité de ${creatorName}`,
+            btnMessage: 'Valider',
+            reportOptions: [
+                {
+                    id: 1,
+                    name: 'Contenu innapproprié ou offensant'
+                },
+                {
+                    id: 2,
+                    name: 'Activité illégale ou dangereuse'
+                },
+                {
+                    id: 3,
+                    name: 'Informations trompeuses'
+                }
+            ],
+            onClose: () => setReportModalOpen(false),
+            onClick: () => {
+                setReportModalOpen(false);
+                setConfirmReportModalOpen(true);
+            }
+        })
+    }
+
     return (
         <>
             {
@@ -258,7 +325,7 @@ function ActivityPage() {
                             {
                                 (creatorId !== userId) ?
                                     <div className="btn-container">
-                                        <SignalButton />
+                                        <SignalButton onClick={openReportModal}/>
                                     </div>
                                     : ''
                             }
@@ -268,6 +335,21 @@ function ActivityPage() {
             {
                 modalVisibility && (
                     <MessageModal {...modalData} />
+                )
+            }
+            {
+                reportModalOpen && (
+                    <ReportModal {...reportModalData} value={comment} onTextChange={(e) => setComment(e.target.value)} reasonId={reasonId} onReasonChange={(e) => setReasonId(e.target.value)}/>
+                )
+            }
+            {
+                confirmReportModalOpen && (
+                    <ConfirmReportModal btnMessage={'Confirmer'} onClick={reportActivity}/>
+                )
+            }
+            {
+                reportDoneModal && (
+                    <ReportDoneModal onClose={() => setReportDoneModal(false)}/>
                 )
             }
         </>

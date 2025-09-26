@@ -27,6 +27,10 @@ class ReportedUser
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'oneReportedUser')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $reported_user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +80,18 @@ class ReportedUser
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getReportedUser(): ?User
+    {
+        return $this->reported_user;
+    }
+
+    public function setReportedUser(?User $reported_user): static
+    {
+        $this->reported_user = $reported_user;
 
         return $this;
     }
