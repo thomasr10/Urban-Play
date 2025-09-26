@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 
-function TextareaMessage ({ onSend }) {
+function TextareaMessage ({ onSend, isDisabled }) {
 
     const textareaRef = useRef(null);
     const [value, setValue] = useState('');
@@ -35,8 +35,8 @@ function TextareaMessage ({ onSend }) {
 
     return (
         <>
-        <textarea className='textarea-msg' ref={textareaRef} value={value} onChange={inputChanges} onKeyDown={handleKeyDown} placeholder='Écris un message' rows={1}></textarea>
-        <button onClick={handleClick}><Send /></button>
+        <textarea className='textarea-msg' ref={textareaRef} value={value} onChange={inputChanges} onKeyDown={handleKeyDown} placeholder='Écris un message' rows={1} disabled={isDisabled}></textarea>
+        <button onClick={handleClick} disabled={isDisabled}><Send /></button>
         </>
     )
 }

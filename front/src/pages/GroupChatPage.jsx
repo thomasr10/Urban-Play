@@ -29,6 +29,9 @@ function GroupChatPage() {
 
     const { isAuthenticated, isUser, loggedFetch } = useAuth();
 
+    const [activityDate, setActivityDate] = useState('');
+    const [isActivityPassed, setIsActivityPassed] = useState(false);
+ 
     function startFetch() {
         setLoadingCount(prev => prev + 1);
     }
@@ -136,10 +139,6 @@ function GroupChatPage() {
         try {
             const data = await loggedFetch('/api/message/get', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
                 body: JSON.stringify({ id, lastMessage })
             });
 
@@ -196,6 +195,40 @@ function GroupChatPage() {
         }
     }
 
+    async function isActivityDone () {
+
+        try {
+            const data = await loggedFetch('/api/groupchat/activity/is-done', {
+                method: 'POST',
+                body: JSON.stringify({ id })
+            });
+            
+            return data;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        isActivityDone()
+        .then((data) => {
+            console.log(data);
+            setActivityDate(data.activityDate.date);
+        })
+        .catch(err => console.error(err))
+    }, [id]);
+
+    useEffect(() => {
+        const string = activityDate.replace(' ', 'T').split('.')[0];
+        const activityFormatDate = new Date(string);
+
+        if (activityFormatDate < new Date()) {
+            setIsActivityPassed(true);
+        }
+        
+    }, [activityDate]);
+
     return (
         <>
             {
@@ -247,7 +280,7 @@ function GroupChatPage() {
                             </div>
                             <div className="send-msg-container">
                                 <div className="input-container">
-                                    <TextareaMessage onSend={sendMessage} />
+                                    <TextareaMessage onSend={sendMessage} isDisabled={isActivityPassed}/>
                                 </div>
                             </div>
                         </section>
